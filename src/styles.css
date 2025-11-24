@@ -1,2 +1,23 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
+
+:root {
+  /* Branding ImmoForge Colors */
+  --color-primary: #0A3A32; /* Vert foncé */
+  --color-primary-light: #0F4F44;
+  --color-primary-dark: #062821;
+
+  --color-secondary: #D4A44B; /* Doré */
+  --color-secondary-light: #E5BE76;
+  --color-secondary-dark: #9E7834;
+
+  --color-stone: #F2F2F0; /* Gris pierre */
+
+  --color-charcoal: #1A1A1A; /* Texte principal / premium */
+
+  --color-bluegray: #3F4B54; /* Option pour sections modernes */
+
+  /* Font Family */
+  --font-sans: "Poppins", "Roboto", "sans-serif";
+}
+

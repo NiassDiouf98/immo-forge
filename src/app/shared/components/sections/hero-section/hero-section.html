@@ -1,0 +1,61 @@
+<section
+  class="relative w-full h-[80vh] flex items-center justify-center overflow-hidden"
+>
+
+  <!-- Background image -->
+  <img
+    src="/assets/bg-hero.png"
+    alt="Immobilier"
+    class="absolute inset-0 w-full h-full object-cover brightness-[0.55]"
+  />
+
+  <!-- Color overlay -->
+  <div class="absolute inset-0 bg-[#0A3A32]/60 backdrop-blur-sm"></div>
+
+  <!-- Content -->
+  <div
+    class="relative text-center text-white px-4 max-w-3xl mx-auto
+           animate-[fadeInUp_1s_ease-out]"
+  >
+    <h1 class="text-4xl md:text-5xl font-bold leading-tight drop-shadow-lg">
+      Trouvez la propriété parfaite en quelques clics
+    </h1>
+
+    <p class="text-lg md:text-xl mt-4 opacity-90">
+      Que vous souhaitiez acheter ou louer, ImmoForge vous accompagne.
+    </p>
+
+    <!-- Search bar -->
+    <div
+      class="bg-white mt-10 p-3 rounded-full shadow-xl flex flex-col md:flex-row items-center gap-3
+             animate-[fadeIn_1.3s_ease-out]"
+    >
+
+      <!-- Type -->
+      <input
+        type="text"
+        placeholder="Type de bien (Maison, Appartement...)"
+        class="flex-1 px-4 py-2 rounded-full text-black outline-none"
+        [(ngModel)]="search.type"
+      />
+
+      <!-- Localisation -->
+      <input
+        type="text"
+        placeholder="Localisation"
+        class="flex-1 px-4 py-2 rounded-full text-black outline-none"
+        [(ngModel)]="search.location"
+      />
+
+      <!-- Bouton search -->
+      <button
+        (click)="onSearch()"
+        class="bg-secondary text-black font-semibold px-8 py-3 rounded-full shadow-md
+               hover:bg-secondary/80 transition"
+      >
+        Rechercher
+      </button>
+    </div>
+  </div>
+
+</section>

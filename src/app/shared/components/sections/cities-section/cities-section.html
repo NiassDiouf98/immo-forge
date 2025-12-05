@@ -1,0 +1,45 @@
+<section id="cities" class="py-20 bg-white">
+
+  <!-- Title -->
+  <div class="text-center mb-14 animate-[fadeInUp_1s_ease-out]">
+    <h2 class="text-3xl md:text-4xl font-bold text-charcoal">
+      Explorer les Villes Populaires
+    </h2>
+    <p class="mt-2 text-gray-600 text-lg">
+      Trouvez un bien dans les zones les plus recherchées au Sénégal
+    </p>
+  </div>
+
+  <!-- Grid -->
+  <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+
+    <div
+      *ngFor="let c of cities"
+      class="relative h-64 rounded-2xl overflow-hidden cursor-pointer shadow-lg
+             transform hover:-translate-y-2 hover:shadow-2xl transition duration-300
+             animate-[fadeInUp_1.2s_ease-out]"
+      (click)="goToCity(c.name)"
+    >
+
+      <!-- Background image -->
+      <img
+        [src]="c.image"
+        class="absolute inset-0 w-full h-full object-cover transition duration-700 hover:scale-110"
+        [alt]="c.name"
+      />
+
+      <!-- Overlay -->
+      <div class="absolute inset-0 bg-black/40"></div>
+
+      <!-- Content -->
+      <div class="absolute bottom-4 left-4 text-white drop-shadow-lg">
+        <h3 class="text-2xl font-bold">{{ c.name }}</h3>
+        <p class="text-sm text-gray-200">
+          {{ c.properties }} propriétés
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>

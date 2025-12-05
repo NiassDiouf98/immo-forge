@@ -1,0 +1,38 @@
+<section id="services" class="py-20 bg-white">
+
+  <!-- Title -->
+  <div class="text-center mb-14 animate-[fadeInUp_1s_ease-out]">
+    <h2 class="text-3xl md:text-4xl font-bold text-charcoal">
+      Nos Services
+    </h2>
+    <p class="mt-2 text-gray-600 text-lg">
+      Une plateforme complète pour simplifier la gestion immobilière
+    </p>
+  </div>
+
+  <!-- Services Grid -->
+  <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+
+    <div
+      *ngFor="let s of services"
+      class="bg-stone rounded-2xl p-8 shadow-lg text-center border border-transparent
+             hover:border-secondary hover:shadow-2xl transition duration-300
+             animate-[fadeInUp_1.2s_ease-out] cursor-pointer"
+    >
+      <!-- Icon circle -->
+      <div class="w-16 h-16 flex items-center justify-center rounded-full bg-primary mx-auto mb-5">
+        <mat-icon class="text-white text-4xl">{{ s.icon }}</mat-icon>
+      </div>
+
+      <h3 class="text-xl font-semibold text-charcoal mb-2">
+        {{ s.title }}
+      </h3>
+
+      <p class="text-gray-600 text-sm leading-relaxed">
+        {{ s.description }}
+      </p>
+    </div>
+
+  </div>
+
+</section>

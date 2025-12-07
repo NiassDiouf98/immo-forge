@@ -1,0 +1,87 @@
+<div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-lg p-6">
+
+  <h2 class="text-2xl font-bold mb-4">{{ isEdit ? 'Éditer' : 'Ajouter' }} un bien</h2>
+
+  <!-- Step 1 : Basic -->
+  <div class="space-y-3 mb-4">
+    <label class="text-sm font-medium">Titre</label>
+    <input [(ngModel)]="model.title" class="w-full rounded-full border px-4 py-2" />
+
+    <label class="text-sm font-medium">Prix (FCFA)</label>
+    <input type="number" [(ngModel)]="model.price" class="w-full rounded-full border px-4 py-2" />
+
+    <div class="grid grid-cols-2 gap-3">
+      <input type="number" [(ngModel)]="model.bedrooms" class="rounded-full border px-4 py-2" placeholder="Chambres" />
+      <input type="number" [(ngModel)]="model.bathrooms" class="rounded-full border px-4 py-2" placeholder="Salles d'eau" />
+    </div>
+
+    <label class="text-sm font-medium">Superficie (m²)</label>
+    <input type="number" [(ngModel)]="model.size" class="w-full rounded-full border px-4 py-2" />
+  </div>
+
+  <!-- Step 2 : Description (WYSIWYG) -->
+  <div class="mb-4">
+    <label class="text-sm font-medium">Description</label>
+    <!-- Replace with quill or similar -->
+    <textarea [(ngModel)]="model.description" rows="6" class="w-full rounded-2xl border px-4 py-3"></textarea>
+  </div>
+
+  <!-- Step 3 : Images -->
+  <div class="mb-6">
+    <label class="text-sm font-medium mb-2 block">Photos & plan</label>
+
+    <div class="flex gap-3 items-start">
+      <div class="flex-1">
+        <label class="cursor-pointer flex items-center gap-3 bg-stone rounded-full px-4 py-3">
+          <mat-icon>photo_camera</mat-icon>
+          <span>Ajouter des photos</span>
+          <input type="file" multiple class="hidden" (change)="onFilesSelected($event)" />
+        </label>
+
+        <div class="mt-4 grid grid-cols-3 gap-3">
+          <div *ngFor="let src of imagePreviews; let i = index" class="relative">
+            <img [src]="src" class="w-full h-28 object-cover rounded-lg" />
+            <button (click)="removePreview(i)" class="absolute top-2 right-2 bg-black/50 text-white rounded-full p-1">
+              <mat-icon class="text-sm">close</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: small tips -->
+      <div class="w-56 text-sm text-gray-600">
+        <p>Astuce : Utilise des photos haute résolution.</p>
+        <p class="mt-2">Format recommandé: JPG/PNG. Max 5MB par image.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4 : Location picker -->
+  <div class="mb-6">
+    <label class="text-sm font-medium mb-2 block">Localisation (picker)</label>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <input [(ngModel)]="model.location" class="rounded-full border px-4 py-2" placeholder="Adresse / ville" />
+
+      <div class="bg-stone rounded-lg p-2">
+        <!-- Simple leaflet integration placeholder -->
+        <div class="h-40 rounded-lg overflow-hidden">
+          <!-- implement actual map; display lat/lng for now -->
+          <div class="w-full h-full flex items-center justify-center text-gray-500">
+            Carte (picker) — {{ lat.toFixed(4) }}, {{ lng.toFixed(4) }}
+          </div>
+        </div>
+        <div class="flex gap-2 mt-2">
+          <button class="px-3 py-2 rounded-full bg-primary text-white" (click)="pickLocation(14.6928, -17.4467)">Positionner ici</button>
+          <button class="px-3 py-2 rounded-full bg-gray-200" (click)="pickLocation(14.72223, -17.49312)">Almadies</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex gap-3">
+    <button (click)="submit()" class="bg-secondary text-black px-6 py-2 rounded-full shadow font-semibold">
+      {{ isEdit ? 'Mettre à jour' : 'Publier' }}
+    </button>
+    <a routerLink="/dashboard/properties" class="px-6 py-2 rounded-full border">Annuler</a>
+  </div>
+</div>

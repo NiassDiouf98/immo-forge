@@ -1,1 +1,123 @@
-<p>contact works!</p>
+<app-navbar></app-navbar>
+
+<section class="pt-24 pb-10 text-center">
+  <h1 class="text-4xl md:text-5xl font-bold text-charcoal">Contactez-nous</h1>
+  <p class="text-gray-600 text-lg mt-3">
+    Nous sommes là pour répondre à vos questions
+  </p>
+</section>
+<section class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12 my-16">
+
+  <!-- FORMULAIRE -->
+  <div class="md:col-span-2 bg-white/80 backdrop-blur-xl shadow-2xl rounded-3xl p-10 animate-[fadeInUp_1s_ease-out]">
+
+    <h2 class="text-2xl font-bold text-charcoal mb-6">Envoyer un message</h2>
+
+    <!-- Name -->
+    <div class="mb-5">
+      <label class="text-gray-700 font-medium mb-1 block">Nom complet</label>
+      <div class="flex items-center border border-gray-300 rounded-full px-4 py-3 focus-within:ring-2 focus-within:ring-[#D4A44B]">
+        <mat-icon class="text-gray-500 mr-3">person</mat-icon>
+        <input [(ngModel)]="form.name" type="text" placeholder="Votre nom"
+               class="flex-1 outline-none"/>
+      </div>
+    </div>
+
+    <!-- Email -->
+    <div class="mb-5">
+      <label class="text-gray-700 font-medium mb-1 block">Email</label>
+      <div class="flex items-center border border-gray-300 rounded-full px-4 py-3 focus-within:ring-2 focus-within:ring-[#D4A44B]">
+        <mat-icon class="text-gray-500 mr-3">email</mat-icon>
+        <input [(ngModel)]="form.email" type="email" placeholder="exemple@mail.com"
+               class="flex-1 outline-none"/>
+      </div>
+    </div>
+
+    <!-- Phone -->
+    <div class="mb-5">
+      <label class="text-gray-700 font-medium mb-1 block">Téléphone</label>
+      <div class="flex items-center border border-gray-300 rounded-full px-4 py-3 focus-within:ring-2 focus-within:ring-[#D4A44B]">
+        <mat-icon class="text-gray-500 mr-3">phone</mat-icon>
+        <input [(ngModel)]="form.phone" type="text" placeholder="+221 77..."
+               class="flex-1 outline-none"/>
+      </div>
+    </div>
+
+    <!-- Message -->
+    <div class="mb-5">
+      <label class="text-gray-700 font-medium mb-1 block">Message</label>
+      <textarea [(ngModel)]="form.message"
+                rows="5"
+                placeholder="Écrivez votre message ici..."
+                class="w-full border border-gray-300 rounded-2xl px-4 py-3 outline-none focus:ring-2 focus:ring-[#D4A44B]"></textarea>
+    </div>
+
+    <!-- Button -->
+    <button (click)="submit()"
+            class="w-full bg-[#D4A44B] text-black font-semibold py-3 rounded-full shadow-md hover:bg-[#D4A44B]/80 transition flex justify-center items-center">
+      <ng-container *ngIf="!loading">Envoyer</ng-container>
+      <ng-container *ngIf="loading">
+        <mat-icon class="animate-spin">autorenew</mat-icon>
+      </ng-container>
+    </button>
+
+    <!-- Success -->
+    <div *ngIf="success"
+         class="mt-6 text-center bg-green-100 text-green-800 py-3 rounded-xl">
+      ✔️ Message envoyé avec succès !
+    </div>
+
+  </div>
+
+  <!-- INFO CONTACT -->
+  <div class="bg-[#0A3A32] text-white rounded-3xl p-10 shadow-xl animate-[fadeInUp_1.2s_ease-out]">
+
+    <h2 class="text-2xl font-bold mb-6">Informations</h2>
+
+    <p class="flex items-center gap-3 mb-4">
+      <mat-icon>location_on</mat-icon>
+      Dakar, Sénégal
+    </p>
+
+    <p class="flex items-center gap-3 mb-4">
+      <mat-icon>email</mat-icon>
+      contact@immoforge.sn
+    </p>
+
+    <p class="flex items-center gap-3 mb-4">
+      <mat-icon>phone</mat-icon>
+      +221 77 123 45 67
+    </p>
+
+    <p class="flex items-center gap-3 mb-4">
+      <mat-icon>schedule</mat-icon>
+      Lun - Sam : 08h - 20h
+    </p>
+
+    <a href="tel:+221771234567"
+       class="block bg-[#D4A44B] text-black font-semibold mt-8 py-3 rounded-full text-center hover:bg-[#D4A44B]/80 transition">
+      Appeler maintenant
+    </a>
+
+  </div>
+
+</section>
+<section class="max-w-7xl mx-auto px-6 my-16">
+
+  <h2 class="text-2xl md:text-3xl font-bold text-charcoal mb-6">
+    Notre localisation
+  </h2>
+
+  <iframe
+    width="100%"
+    height="450"
+    class="rounded-3xl shadow-xl"
+    loading="lazy"
+    style="border:0"
+    allowfullscreen
+    src="https://www.google.com/maps/embed/v1/place?q=Dakar&key=YOUR_GOOGLE_API_KEY">
+  </iframe>
+
+</section>
+
+<app-footer></app-footer>

@@ -1,0 +1,122 @@
+<app-navbar></app-navbar>
+
+<section class="relative w-full h-[70vh] overflow-hidden mb-10">
+
+  <!-- Main Image -->
+  <img
+    [src]="property.images[selectedImage]"
+    class="w-full h-full object-cover transition duration-500"
+  />
+
+  <!-- Thumbnails -->
+  <div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 flex gap-3 bg-black/30 p-3 rounded-full backdrop-blur-xl">
+    <div
+      *ngFor="let img of property.images; let i = index"
+      (click)="changeImage(i)"
+      class="w-20 h-14 rounded-lg overflow-hidden cursor-pointer border-2 transition"
+      [class.border-[#D4A44B]]="selectedImage === i"
+      [class.border-transparent]="selectedImage !== i"
+    >
+      <img [src]="img" class="w-full h-full object-cover" />
+    </div>
+  </div>
+
+</section>
+
+<section class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-10">
+
+  <!-- Left (title, description) -->
+  <div class="md:col-span-2">
+
+    <h1 class="text-4xl font-bold text-charcoal mb-2">
+      {{ property.title }}
+    </h1>
+
+    <p class="flex items-center gap-2 text-lg text-gray-600 mb-4">
+      <mat-icon class="text-[#0A3A32]">location_on</mat-icon>
+      {{ property.location }}
+    </p>
+
+    <h2 class="text-3xl font-bold text-[#0A3A32] mb-6">
+      {{ property.price | number }} FCFA
+    </h2>
+
+    <!-- Features -->
+    <div class="flex items-center gap-6 text-gray-700 text-lg mb-8">
+
+      <span class="flex items-center gap-2">
+        <mat-icon>bed</mat-icon>
+        {{ property.bedrooms }} Chambres
+      </span>
+
+      <span class="flex items-center gap-2">
+        <mat-icon>bathtub</mat-icon>
+        {{ property.bathrooms }} Salles d’eau
+      </span>
+
+      <span class="flex items-center gap-2">
+        <mat-icon>square_foot</mat-icon>
+        {{ property.size }} m²
+      </span>
+
+    </div>
+
+    <p class="text-gray-700 leading-relaxed text-lg">
+      {{ property.description }}
+    </p>
+
+  </div>
+
+  <!-- Right (contact card) -->
+  <div class="bg-white shadow-xl rounded-3xl p-6 h-fit animate-[fadeInUp_1s_ease-out]">
+    <h3 class="text-xl font-bold text-charcoal mb-4">Contacter le propriétaire</h3>
+
+    <p class="text-lg font-semibold">{{ property.owner.name }}</p>
+
+    <p class="flex items-center gap-2 mt-4">
+      <mat-icon class="text-[#0A3A32]">phone</mat-icon> {{ property.owner.phone }}
+    </p>
+
+    <p class="flex items-center gap-2 mt-2">
+      <mat-icon class="text-[#0A3A32]">email</mat-icon> {{ property.owner.email }}
+    </p>
+
+    <a href="tel:{{ property.owner.phone }}"
+       class="block w-full mt-6 bg-[#0A3A32] text-white text-center py-3 rounded-full font-semibold hover:bg-[#0A3A32]/90">
+      Appeler maintenant
+    </a>
+
+    <a href="mailto:{{ property.owner.email }}"
+       class="block w-full mt-3 bg-[#D4A44B] text-black text-center py-3 rounded-full font-semibold hover:bg-[#D4A44B]/80">
+      Envoyer un email
+    </a>
+  </div>
+
+</section>
+
+<section class="max-w-7xl mx-auto px-6 my-16">
+
+  <h3 class="text-3xl font-bold text-charcoal mb-6">Plan du bien</h3>
+
+  <img [src]="property.planImage"
+       class="w-full rounded-3xl shadow-lg animate-[fadeInUp_1s_ease-out]" />
+
+</section>
+
+<section class="max-w-7xl mx-auto px-6 my-16">
+
+  <h3 class="text-3xl font-bold text-charcoal mb-6">Localisation</h3>
+
+  <iframe
+    width="100%"
+    height="450"
+    class="rounded-3xl shadow-xl"
+    style="border:0"
+    loading="lazy"
+    allowfullscreen
+    [src]="safeMapUrl">
+  </iframe>
+
+</section>
+
+<app-footer></app-footer>

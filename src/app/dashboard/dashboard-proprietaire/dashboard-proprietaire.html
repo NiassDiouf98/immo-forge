@@ -1,0 +1,65 @@
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+  <!-- cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 col-span-2">
+    <div class="bg-white rounded-2xl p-6 shadow-lg">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-sm text-gray-500">Total Biens</div>
+          <div class="text-2xl font-bold text-charcoal">{{ stats.totalProperties }}</div>
+        </div>
+        <div class="bg-primary text-white p-3 rounded-full">
+          <mat-icon>home</mat-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-6 shadow-lg">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-sm text-gray-500">Annonces actives</div>
+          <div class="text-2xl font-bold text-charcoal">{{ stats.activeListings }}</div>
+        </div>
+        <div class="bg-primary text-white p-3 rounded-full">
+          <mat-icon>flash_on</mat-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-6 shadow-lg">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-sm text-gray-500">Revenus ce mois</div>
+          <div class="text-2xl font-bold text-charcoal">{{ stats.revenueThisMonth | number }} FCFA</div>
+        </div>
+        <div class="bg-primary text-white p-3 rounded-full">
+          <mat-icon>paid</mat-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- chart and activity -->
+  <div class="bg-white rounded-2xl p-6 shadow-lg col-span-1">
+    <h3 class="font-semibold mb-4">Tendances visites (7 jrs)</h3>
+    <!-- Minimal chart: you can use recharts or ng-apexcharts.
+         For now show a placeholder div or integrate chart lib -->
+    <div class="h-44 flex items-center justify-center text-gray-400 border border-dashed rounded-lg">
+      Graphique (intégrer ApexCharts / Chart.js / Recharts)
+    </div>
+  </div>
+
+</div>
+
+<!-- Recent activity -->
+<div class="mt-8">
+  <h4 class="text-lg font-semibold mb-4">Activité récente</h4>
+  <ul class="space-y-3">
+    <li class="bg-white p-4 rounded-lg shadow-sm flex justify-between">
+      <div>
+        Nouvelle demande de visite — <span class="font-semibold">Appartement Plateau</span>
+      </div>
+      <div class="text-sm text-gray-400">2 heures</div>
+    </li>
+  </ul>
+</div>

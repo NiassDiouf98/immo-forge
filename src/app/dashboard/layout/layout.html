@@ -1,0 +1,114 @@
+<div class="min-h-screen flex bg-stone">
+
+  <!-- SIDEBAR -->
+  <aside
+    [class.w-72]="sidebarOpen"
+    [class.w-16]="!sidebarOpen"
+    class="transition-all duration-300 bg-white/95 shadow-lg p-4"
+  >
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-3">
+        <img src="/assets/logo-immoforge.png" alt="logo" class="w-10 h-10 rounded-full" />
+        <span *ngIf="sidebarOpen" class="font-bold text-lg">ImmoForge</span>
+      </div>
+      <button (click)="toggleSidebar()" class="p-2 rounded-full hover:bg-gray-100">
+        <mat-icon>{{ sidebarOpen ? 'chevron_left' : 'chevron_right' }}</mat-icon>
+      </button>
+    </div>
+
+    <nav class="flex flex-col gap-2">
+      <a routerLink="/dashboard" class="flex items-center gap-3 p-3 rounded-lg hover:bg-stone">
+        <mat-icon>dashboard</mat-icon>
+        <span *ngIf="sidebarOpen">Tableau de bord</span>
+      </a>
+
+      <a routerLink="/dashboard/properties" class="flex items-center gap-3 p-3 rounded-lg hover:bg-stone">
+        <mat-icon>home</mat-icon>
+        <span *ngIf="sidebarOpen">Mes biens</span>
+      </a>
+
+      <a routerLink="/dashboard/create-property" class="flex items-center gap-3 p-3 rounded-lg hover:bg-stone">
+        <mat-icon>add_box</mat-icon>
+        <span *ngIf="sidebarOpen">Ajouter un bien</span>
+      </a>
+
+      <a routerLink="/dashboard/bookings" class="flex items-center gap-3 p-3 rounded-lg hover:bg-stone">
+        <mat-icon>event</mat-icon>
+        <span *ngIf="sidebarOpen">Réservations</span>
+      </a>
+
+      <a routerLink="/dashboard/messages" class="flex items-center gap-3 p-3 rounded-lg hover:bg-stone">
+        <mat-icon>message</mat-icon>
+        <span *ngIf="sidebarOpen">Messages</span>
+      </a>
+
+      <a routerLink="/dashboard/settings" class="flex items-center gap-3 p-3 rounded-lg hover:bg-stone mt-4">
+        <mat-icon>settings</mat-icon>
+        <span *ngIf="sidebarOpen">Paramètres</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="flex-1 flex flex-col">
+
+    <!-- TOPBAR -->
+    <header class="flex items-center justify-between p-4 bg-white/90 shadow-sm">
+      <div class="flex items-center gap-4">
+        <button class="md:hidden p-2 rounded-md" (click)="toggleSidebar()">
+          <mat-icon>menu</mat-icon>
+        </button>
+
+        <div class="hidden sm:flex items-center gap-4">
+          <input type="text" placeholder="Rechercher un bien, une ville..."
+                 class="bg-stone rounded-full px-4 py-2 w-80 outline-none" />
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <!-- Notifications -->
+        <div class="relative">
+          <button (click)="userMenuOpen = !userMenuOpen" class="p-2 rounded-full hover:bg-stone">
+            <mat-icon>notifications</mat-icon>
+            <span class="text-xs bg-secondary text-black rounded-full px-2 ml-1">2</span>
+          </button>
+          <!-- quick dropdown -->
+          <div *ngIf="userMenuOpen" class="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-lg p-4 z-50">
+            <h4 class="font-semibold mb-2">Notifications</h4>
+            <ul class="space-y-2 max-h-60 overflow-auto">
+              <li *ngFor="let n of notifications" class="text-sm">
+                <div class="flex justify-between">
+                  <div class="text-gray-700">{{ n.text }}</div>
+                  <div class="text-gray-400 text-xs">{{ n.time }}</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- User menu -->
+        <div class="relative">
+          <button (click)="userMenuOpen = !userMenuOpen" class="flex items-center gap-3 p-2 rounded-full hover:bg-stone">
+            <img src="/assets/users/user1.jpg" class="w-9 h-9 rounded-full object-cover" />
+            <div class="hidden md:block text-left">
+              <div class="text-sm font-semibold">Fatou N.</div>
+              <div class="text-xs text-gray-500">Propriétaire</div>
+            </div>
+          </button>
+
+          <div *ngIf="userMenuOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-lg p-2 z-50">
+            <a routerLink="/profile" class="block px-3 py-2 hover:bg-stone rounded-lg">Mon profil</a>
+            <a routerLink="/dashboard/settings" class="block px-3 py-2 hover:bg-stone rounded-lg">Paramètres</a>
+            <button (click)="logout()" class="w-full text-left px-3 py-2 hover:bg-stone rounded-lg">Se déconnecter</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Router outlet -->
+    <main class="p-6 overflow-auto">
+      <router-outlet></router-outlet>
+    </main>
+
+  </div>
+</div>

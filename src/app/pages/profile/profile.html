@@ -1,0 +1,117 @@
+<!-- header user -->
+
+<section class="pt-24 pb-10 max-w-6xl mx-auto px-6 animate-[fadeInUp_0.8s_ease-out]">
+
+  <div class="bg-white/80 backdrop-blur-xl shadow-2xl rounded-3xl p-10 flex flex-col md:flex-row items-center gap-10">
+
+    <!-- Avatar -->
+    <div class="relative">
+      <img
+        [src]="avatarPreview || user.avatar"
+        class="w-40 h-40 object-cover rounded-full shadow-xl border-4 border-[#D4A44B]"
+      />
+
+      <!-- Upload button -->
+      <label class="absolute bottom-0 right-2 bg-[#0A3A32] text-white p-2 rounded-full cursor-pointer hover:bg-[#0A3A32]/90">
+        <mat-icon>photo_camera</mat-icon>
+        <input type="file" class="hidden" (change)="onAvatarChange($event)" />
+      </label>
+    </div>
+
+    <!-- User Info -->
+    <div class="flex-1">
+      <h1 class="text-3xl font-bold text-charcoal">{{ user.name }}</h1>
+      <p class="text-gray-600 text-lg mt-1">{{ user.role }}</p>
+
+      <div class="mt-4 space-y-2">
+        <p class="flex items-center gap-3 text-gray-700">
+          <mat-icon class="text-[#0A3A32]">email</mat-icon> {{ user.email }}
+        </p>
+        <p class="flex items-center gap-3 text-gray-700">
+          <mat-icon class="text-[#0A3A32]">phone</mat-icon> {{ user.phone }}
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- update-profile -->
+<section class="max-w-6xl mx-auto px-6 mt-12 grid grid-cols-1 md:grid-cols-2 gap-10">
+
+  <!-- Form -->
+  <div class="bg-white shadow-xl rounded-3xl p-10 animate-[fadeInUp_1s_ease-out]">
+
+    <h2 class="text-2xl font-bold text-charcoal mb-6">Modifier mes informations</h2>
+
+    <!-- Name -->
+    <label class="block text-gray-700 font-medium mb-1">Nom complet</label>
+    <input type="text" [(ngModel)]="user.name"
+           class="w-full border rounded-full px-4 py-3 mb-5 outline-none focus:ring-2 focus:ring-[#D4A44B]" />
+
+    <!-- Email -->
+    <label class="block text-gray-700 font-medium mb-1">Email</label>
+    <input type="email" [(ngModel)]="user.email"
+           class="w-full border rounded-full px-4 py-3 mb-5 outline-none focus:ring-2 focus:ring-[#D4A44B]" />
+
+    <!-- Phone -->
+    <label class="block text-gray-700 font-medium mb-1">Téléphone</label>
+    <input type="text" [(ngModel)]="user.phone"
+           class="w-full border rounded-full px-4 py-3 mb-5 outline-none focus:ring-2 focus:ring-[#D4A44B]" />
+
+    <button class="w-full bg-[#0A3A32] text-white py-3 rounded-full font-semibold hover:bg-[#0A3A32]/90">
+      Sauvegarder
+    </button>
+  </div>
+
+  <!-- Settings -->
+  <div class="bg-white shadow-xl rounded-3xl p-10 animate-[fadeInUp_1.2s_ease-out]">
+
+    <h2 class="text-2xl font-bold text-charcoal mb-6">Paramètres du compte</h2>
+
+    <button class="w-full bg-[#D4A44B] text-black py-3 rounded-full font-semibold hover:bg-[#D4A44B]/80 mb-4">
+      Changer le mot de passe
+    </button>
+
+    <button class="w-full bg-gray-200 py-3 rounded-full font-semibold hover:bg-gray-300">
+      Se déconnecter
+    </button>
+
+  </div>
+
+</section>
+
+<!-- user properties -->
+<section class="max-w-6xl mx-auto px-6 mt-20 mb-20">
+
+  <h2 class="text-3xl font-bold text-charcoal mb-10">Mes propriétés</h2>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+
+    <div *ngFor="let p of properties"
+         class="bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition transform hover:-translate-y-1 animate-[fadeInUp_1.3s_ease-out]">
+
+      <img [src]="p.image" class="w-full h-48 object-cover" />
+
+      <div class="p-6">
+        <h3 class="text-xl font-semibold text-charcoal">{{ p.title }}</h3>
+        <p class="text-gray-600 flex items-center gap-2 mt-1">
+          <mat-icon class="text-[#0A3A32]">location_on</mat-icon> {{ p.location }}
+        </p>
+
+        <p class="text-[#0A3A32] font-bold mt-3 text-lg">
+          {{ p.price | number }} FCFA
+        </p>
+
+        <a [routerLink]="['/property', p.id]"
+           class="block bg-[#0A3A32] text-white mt-5 py-2 rounded-full text-center font-semibold hover:bg-[#0A3A32]/90">
+          Voir détails
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>

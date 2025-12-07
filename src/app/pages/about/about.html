@@ -1,1 +1,87 @@
-<p>about works!</p>
+<app-navbar></app-navbar>
+<section class="py-20 bg-white">
+
+  <!-- Title -->
+  <div class="text-center mb-12 animate-[fadeInUp_1s_ease-out]">
+    <h2 class="text-3xl md:text-4xl font-bold text-charcoal">
+      À propos d’ImmoForge
+    </h2>
+    <p class="text-gray-600 text-lg mt-2">
+      Une plateforme pensée pour moderniser le marché immobilier au Sénégal
+    </p>
+  </div>
+
+
+  <!-- About content -->
+  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-14 items-center">
+
+    <!-- Image -->
+    <div class="relative animate-[fadeInUp_1.2s_ease-out]">
+      <img
+        src="/assets/about/immobilier.png"
+        alt="ImmoForge"
+        class="rounded-3xl shadow-lg w-full object-cover"
+      />
+      <div class="absolute -bottom-5 -right-5 bg-[#D4A44B] text-black px-6 py-3 rounded-full shadow-xl">
+        Depuis 2025
+      </div>
+    </div>
+
+    <!-- Text -->
+    <div class="animate-[fadeInUp_1.3s_ease-out]">
+      <h3 class="text-2xl md:text-3xl font-bold text-charcoal mb-4">
+        Une vision moderne de l’immobilier
+      </h3>
+
+      <p class="text-gray-600 leading-relaxed mb-6">
+        ImmoForge a été créé pour offrir une expérience innovante dans la gestion immobilière au Sénégal.
+        Nous connectons propriétaires, clients et professionnels dans une plateforme simple, rapide et sécurisée.
+      </p>
+
+      <p class="text-gray-600 leading-relaxed">
+        Notre objectif est de rendre la gestion, la recherche et les transactions immobilières plus fluides,
+        plus transparentes et accessibles à tous.
+      </p>
+    </div>
+
+  </div>
+
+
+  <!-- WHY CHOOSE US -->
+  <div class="mt-20 text-center animate-[fadeInUp_1.4s_ease-out]">
+    <h3 class="text-3xl font-bold text-charcoal">
+      Pourquoi nous choisir ?
+    </h3>
+    <p class="text-gray-600 text-lg mt-2">
+      ImmoForge, une plateforme pensée pour vous
+    </p>
+  </div>
+
+  <!-- Advantages grid -->
+  <div class="max-w-7xl mx-auto px-6 mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+
+    <div
+      *ngFor="let adv of advantages"
+      class="bg-stone rounded-2xl p-8 text-center shadow-lg border border-transparent
+             hover:border-[#D4A44B] hover:shadow-2xl transition duration-300
+             animate-[fadeInUp_1.6s_ease-out]"
+    >
+
+      <!-- Icon -->
+      <div class="w-16 h-16 bg-[#0A3A32] rounded-full flex items-center justify-center mx-auto mb-4">
+        <mat-icon class="!text-white text-3xl">{{ adv.icon }}</mat-icon>
+      </div>
+
+      <h4 class="text-xl font-semibold text-charcoal mb-2">
+        {{ adv.title }}
+      </h4>
+
+      <p class="text-gray-600 text-sm leading-relaxed">
+        {{ adv.description }}
+      </p>
+    </div>
+
+  </div>
+
+</section>
+<app-footer></app-footer>

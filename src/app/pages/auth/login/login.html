@@ -1,1 +1,82 @@
-<p>login works!</p>
+<section class="min-h-screen flex items-center justify-center bg-stone px-4 py-10">
+
+  <div class="bg-white/80 backdrop-blur-xl shadow-2xl rounded-3xl w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 overflow-hidden animate-[fadeInUp_1s_ease-out]">
+
+    <!-- Left: Login form -->
+    <div class="p-10 flex flex-col justify-center">
+
+      <h2 class="text-3xl font-bold text-charcoal mb-2">
+        <mat-icon routerLink="/home" class="cursor-pointer mr-2">arrow_back</mat-icon>
+        Bienvenue
+      </h2>
+      <p class="text-gray-600 mb-8">
+        Connectez-vous pour accéder à votre espace ImmoForge
+      </p>
+
+      <!-- Email -->
+      <div class="mb-5">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <div class="flex items-center bg-white border border-gray-300 rounded-full px-4 py-3 focus-within:ring-2 focus-within:ring-[#D4A44B] transition">
+          <mat-icon class="text-gray-500 mr-3">email</mat-icon>
+          <input
+            type="email"
+            [(ngModel)]="email"
+            placeholder="exemple@mail.com"
+            class="flex-1 outline-none"
+          />
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+        <div class="flex items-center bg-white border border-gray-300 rounded-full px-4 py-3 focus-within:ring-2 focus-within:ring-[#D4A44B] transition">
+          <mat-icon class="text-gray-500 mr-3">lock</mat-icon>
+          <input
+            type="password"
+            [(ngModel)]="password"
+            placeholder="********"
+            class="flex-1 outline-none"
+          />
+        </div>
+
+        <a href="forgot-password" class="text-sm text-[#0A3A32] hover:underline mt-2 inline-block">
+          Mot de passe oublié ?
+        </a>
+      </div>
+
+      <!-- Login button -->
+      <button
+        (click)="login()"
+        class="w-full bg-[#D4A44B] text-black font-semibold py-3 rounded-full shadow-md hover:bg-[#D4A44B]/80 transition flex justify-center items-center"
+      >
+        <ng-container *ngIf="!loading">
+          Se connecter
+        </ng-container>
+
+        <ng-container *ngIf="loading">
+          <mat-icon class="animate-spin">autorenew</mat-icon>
+        </ng-container>
+      </button>
+
+      <p class="text-center text-gray-600 text-sm mt-6">
+        Pas encore de compte ?
+        <a href="/register" class="text-[#0A3A32] font-semibold hover:underline">
+          Créer un compte
+        </a>
+      </p>
+
+    </div>
+
+    <!-- Right: Image -->
+    <div class="hidden md:block relative">
+      <img
+        src="/assets/auth/login-bg.png"
+        class="w-full h-full object-cover"
+      />
+      <div class="absolute inset-0 bg-black/10"></div>
+    </div>
+
+  </div>
+
+</section>

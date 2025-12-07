@@ -1,0 +1,122 @@
+<app-navbar></app-navbar>
+
+<section class="pt-24 pb-12 text-center">
+  <h1 class="text-4xl md:text-5xl font-bold text-charcoal">Trouvez votre propriété idéale</h1>
+  <p class="text-gray-600 text-lg mt-3">
+    Découvrez une sélection exclusive de biens immobiliers premium
+  </p>
+</section>
+
+<section class="max-w-7xl mx-auto px-6 mb-16">
+  <div class="bg-white shadow-xl rounded-3xl p-6 grid grid-cols-1 md:grid-cols-5 gap-4 animate-[fadeInUp_0.8s_ease-out]">
+
+    <!-- Type -->
+    <div class="flex flex-col">
+      <label class="text-gray-700 font-medium mb-1">Type</label>
+      <select [(ngModel)]="filters.type" class="rounded-full border-gray-300 p-3 outline-none">
+        <option value="">Tous</option>
+        <option>Appartement</option>
+        <option>Villa</option>
+        <option>Studio</option>
+      </select>
+    </div>
+
+    <!-- Location -->
+    <div>
+      <label class="text-gray-700 font-medium mb-1">Localisation</label>
+      <input [(ngModel)]="filters.location" type="text" placeholder="Ex : Dakar"
+             class="rounded-full border-gray-300 p-3 w-full outline-none" />
+    </div>
+
+    <!-- Prix min -->
+    <div>
+      <label class="text-gray-700 font-medium mb-1">Prix min</label>
+      <input [(ngModel)]="filters.minPrice" type="number" placeholder="Min"
+             class="rounded-full border-gray-300 p-3 w-full outline-none" />
+    </div>
+
+    <!-- Prix max -->
+    <div>
+      <label class="text-gray-700 font-medium mb-1">Prix max</label>
+      <input [(ngModel)]="filters.maxPrice" type="number" placeholder="Max"
+             class="rounded-full border-gray-300 p-3 w-full outline-none" />
+    </div>
+
+    <!-- Boutons -->
+    <div class="flex items-end gap-3">
+      <button (click)="applyFilters()"
+              class="bg-[#0A3A32] text-white px-4 py-3 rounded-full w-full font-semibold hover:bg-[#0A3A32]/90">
+        Filtrer
+      </button>
+
+      <button (click)="resetFilters()"
+              class="px-4 py-3 rounded-full bg-gray-200 hover:bg-gray-300 font-semibold">
+        Reset
+      </button>
+    </div>
+
+  </div>
+</section>
+
+<section class="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+
+  <div *ngFor="let p of properties"
+       class="bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition transform hover:-translate-y-1 animate-[fadeInUp_1s_ease-out]">
+
+    <!-- Image -->
+    <div class="relative">
+      <img [src]="p.image" class="w-full h-64 object-cover" />
+      <span class="absolute top-4 left-4 bg-[#D4A44B] text-black px-4 py-2 rounded-full font-semibold">
+        {{ p.price | number }} FCFA
+      </span>
+    </div>
+
+    <!-- Content -->
+    <div class="p-6 space-y-2">
+      <h3 class="text-xl font-bold text-charcoal">{{ p.title }}</h3>
+      <p class="text-gray-600 flex items-center gap-1">
+        <mat-icon class="text-[#0A3A32]">location_on</mat-icon>
+        {{ p.location }}
+      </p>
+
+      <div class="flex items-center gap-4 text-gray-700 mt-4">
+        <span class="flex items-center gap-1">
+          <mat-icon>bed</mat-icon> {{ p.bedrooms }}
+        </span>
+        <span class="flex items-center gap-1">
+          <mat-icon>bathtub</mat-icon> {{ p.bathrooms }}
+        </span>
+        <span class="flex items-center gap-1">
+          <mat-icon>square_foot</mat-icon> {{ p.size }} m²
+        </span>
+      </div>
+
+      <a [routerLink]="['/property', p.id]"
+         class="block mt-6 text-center bg-[#0A3A32] text-white py-3 rounded-full font-semibold hover:bg-[#0A3A32]/90">
+        Voir les détails
+      </a>
+    </div>
+
+  </div>
+
+</section>
+
+<section class="max-w-7xl mx-auto px-6 my-16 flex justify-center gap-3">
+  <button class="w-10 h-10 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center">
+    <mat-icon>chevron_left</mat-icon>
+  </button>
+
+  <button class="w-10 h-10 rounded-full bg-[#0A3A32] text-white flex items-center justify-center font-bold">
+    1
+  </button>
+
+  <button class="w-10 h-10 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center">
+    2
+  </button>
+
+  <button class="w-10 h-10 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center">
+    <mat-icon>chevron_right</mat-icon>
+  </button>
+</section>
+
+<app-footer></app-footer>

@@ -1,0 +1,18 @@
+<h1 class="page-title mb-6">Mes favoris</h1>
+
+@if (error()) {
+  <div class="alert-error">{{ error() }}</div>
+} @else if (loading()) {
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">@for (i of [1, 2, 3]; track i) { <div class="h-96 bg-white rounded-3xl animate-pulse"></div> }</div>
+} @else {
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+    @for (f of favoris(); track f.id) {
+      <app-property-card [bien]="f.bien!" [favoriteToggle]="true" [isFavorite]="true" (toggleFavorite)="remove($event)" />
+    } @empty {
+      <div class="empty-state col-span-full">
+        <mat-icon class="!text-5xl !w-12 !h-12">favorite_border</mat-icon>
+        <p class="mt-2">Aucun favori. <a routerLink="/properties" class="text-primary font-semibold hover:underline">Parcourir les biens</a></p>
+      </div>
+    }
+  </div>
+}

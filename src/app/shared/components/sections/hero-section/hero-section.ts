@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { ApiService } from '../../../../core/services/api.service';
+import { Refs } from '../../../../core/models/models';
 
 @Component({
   selector: 'app-hero-section',
@@ -8,17 +11,18 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './hero-section.html',
   styleUrl: './hero-section.css',
 })
-export class HeroSection {
+export class HeroSection implements OnInit {
+  private api = inject(ApiService);
+  private router = inject(Router);
 
-  search = {
-    type: '',
-    location: '',
-    minPrice: null,
-    maxPrice: null
-  };
+  refs: Refs = { zones: [], types: [], statuts: [] };
+  search = { type_id: '', zone_id: '', search: '' };
+
+  ngOnInit() {
+    this.api.refs().subscribe({ next: r => (this.refs = r), error: () => {} });
+  }
 
   onSearch() {
-    console.log("Recherche envoyée :", this.search);
-    // Ici tu feras la redirection vers results page
+    this.router.navigate(['/properties'], { queryParams: { ...this.search } });
   }
 }

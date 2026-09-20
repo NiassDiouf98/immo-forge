@@ -1,68 +1,24 @@
-<section id="testimonials" class="py-20 bg-stone min-h-[500px]">
-
-  <!-- Section Title -->
-  <div class="text-center mb-12 animate-[fadeInUp_1s_ease-out]">
-    <h2 class="text-3xl md:text-4xl font-bold text-charcoal">
-      Témoignages Clients
-    </h2>
-    <p class="text-gray-600 mt-2 text-lg">
-      Ils nous font confiance
-    </p>
-  </div>
-
-  <!-- Slider -->
-  <div class="relative max-w-3xl mx-auto px-4">
-
-    <!-- Testimonial card -->
-    <div
-      *ngFor="let t of testimonials; let i = index"
-      class="absolute inset-0 transition-all duration-700"
-      [class.opacity-100]="i === activeIndex"
-      [class.opacity-0]="i !== activeIndex"
-      [class.translate-x-0]="i === activeIndex"
-      [class.translate-x-10]="i !== activeIndex"
-    >
-      <div
-        class="bg-white rounded-2xl shadow-xl p-10 text-center animate-[fadeInUp_1s_ease-out]"
-      >
-        <img
-          [src]="t.image"
-          alt="client"
-          class="w-20 h-20 rounded-full mx-auto mb-5 object-cover shadow-md"
-        />
-
-        <p class="text-gray-700 text-lg italic mb-6">
-          “{{ t.message }}”
-        </p>
-
-        <h3 class="text-[#0A3A32] font-bold text-xl">
-          {{ t.name }}
-        </h3>
-        <p class="text-gray-500 text-sm">
-          {{ t.role }}
-        </p>
-      </div>
+<section id="testimonials" class="bg-white py-20">
+  <div class="mx-auto max-w-7xl px-6">
+    <div class="mx-auto mb-14 max-w-2xl text-center">
+      <p class="eyebrow">Témoignages</p>
+      <h2 class="section-title">Ils nous font confiance</h2>
     </div>
 
-    <!-- Nav arrows -->
-    <div class="flex justify-between absolute inset-0 items-center px-4">
-      <button
-        (click)="prev()"
-        class="bg-[#0A3A32] text-white w-10 h-10 rounded-full flex
-               items-center justify-center shadow-lg hover:bg-[#0A3A32]/90 transition"
-      >
-        <mat-icon>chevron_left</mat-icon>
-      </button>
-
-      <button
-        (click)="next()"
-        class="bg-[#0A3A32] text-white w-10 h-10 rounded-full flex
-               items-center justify-center shadow-lg hover:bg-[#0A3A32]/90 transition"
-      >
-        <mat-icon>chevron_right</mat-icon>
-      </button>
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+      @for (t of testimonials; track t.name) {
+        <figure class="flex flex-col rounded-2xl border border-gray-100 bg-stone/60 p-8">
+          <span class="material-icons mb-4 !text-4xl text-secondary">format_quote</span>
+          <blockquote class="flex-1 leading-relaxed text-gray-700">{{ t.message }}</blockquote>
+          <figcaption class="mt-6 flex items-center gap-4">
+            <img [src]="t.image" [alt]="t.name" class="h-12 w-12 rounded-full object-cover ring-2 ring-secondary/40" loading="lazy" />
+            <div>
+              <div class="font-semibold text-charcoal">{{ t.name }}</div>
+              <div class="text-xs text-gray-500">{{ t.role }}</div>
+            </div>
+          </figcaption>
+        </figure>
+      }
     </div>
-
   </div>
-
 </section>

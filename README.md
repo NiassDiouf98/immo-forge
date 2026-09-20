@@ -1,5 +1,7 @@
 # immo-forge
 
+> Comptes de connexion de démonstration et liste des écrans : voir le [README à la racine](../README.md).
+
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.6.
 
 ## Development server

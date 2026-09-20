@@ -1,0 +1,55 @@
+<div class="flex items-center justify-between mb-6 gap-4 flex-wrap">
+  <h1 class="page-title">Modération des biens</h1>
+  <select [(ngModel)]="statusFilter" (ngModelChange)="load(1)" class="field !w-auto !rounded-full !py-2" aria-label="Filtrer par statut">
+    <option value="1">En attente de validation</option>
+    <option value="2">Validés</option>
+    <option value="3">Refusés</option>
+    <option value="">Tous</option>
+  </select>
+</div>
+
+@if (error()) {
+  <div class="alert-error">{{ error() }}</div>
+} @else if (loading()) {
+  <div class="space-y-4">@for (i of [1, 2, 3]; track i) { <div class="h-28 bg-white rounded-2xl animate-pulse"></div> }</div>
+} @else {
+  <div class="space-y-4">
+    @for (b of biens(); track b.id) {
+      <div class="card p-4 flex flex-col md:flex-row gap-4 md:items-center">
+        <img [src]="img(b)" alt="" class="w-full md:w-32 h-24 rounded-xl object-cover" />
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <a [routerLink]="['/property', b.id]" class="font-semibold hover:underline">{{ b.titre }}</a>
+            <app-badge [value]="b.status?.nom ?? ''" />
+          </div>
+          <p class="text-sm text-gray-500">{{ b.type?.nom }} · {{ b.zone?.nom }} · {{ b.prix | number }} FCFA</p>
+          <p class="text-sm text-gray-500">Par {{ fullName(b.proprietaire) }} ({{ b.proprietaire?.email }})</p>
+          @if (b.raison_refus) { <p class="text-sm text-red-600">Refus : {{ b.raison_refus }}</p> }
+        </div>
+        <div class="flex gap-2 flex-wrap">
+          @if (b.status_id !== 2) { <button (click)="valider(b)" class="btn btn-primary btn-sm">Valider</button> }
+          @if (b.status_id !== 3) { <button (click)="refusing.set(b)" class="btn btn-danger btn-sm">Refuser</button> }
+          <button (click)="remove(b)" class="btn btn-outline btn-sm !px-3" aria-label="Supprimer"><mat-icon class="!text-lg !w-5 !h-5">delete</mat-icon></button>
+        </div>
+      </div>
+    } @empty {
+      <div class="empty-state">Aucun bien dans cette catégorie.</div>
+    }
+  </div>
+  <app-pagination [page]="pagination().page" [totalPages]="pagination().totalPages" (pageChange)="load($event)" />
+}
+
+@if (refusing(); as b) {
+  <div class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" (click)="refusing.set(null)">
+    <div class="animate-pop w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+      <h2 class="text-xl font-bold mb-1">Refuser ce bien</h2>
+      <p class="text-sm text-gray-600 mb-4">{{ b.titre }}</p>
+      <label class="label" for="raison">Motif (visible par le propriétaire)</label>
+      <textarea id="raison" rows="3" [(ngModel)]="raison" class="field mb-4"></textarea>
+      <div class="flex justify-end gap-2">
+        <button (click)="refusing.set(null)" class="btn btn-outline">Annuler</button>
+        <button (click)="confirmRefuse()" class="btn bg-red-600 text-white hover:bg-red-700">Refuser</button>
+      </div>
+    </div>
+  </div>
+}

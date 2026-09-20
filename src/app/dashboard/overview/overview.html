@@ -1,0 +1,76 @@
+<div class="mb-8">
+  <h1 class="page-title !text-3xl">Bonjour {{ auth.user()?.prenom || auth.fullName() }} 👋</h1>
+  <p class="page-subtitle">Voici un aperçu de votre activité.</p>
+</div>
+
+@if (error()) {
+  <div class="alert-error">{{ error() }}</div>
+} @else if (!data()) {
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    @for (i of [1, 2, 3]; track i) { <div class="h-28 animate-pulse rounded-2xl bg-white"></div> }
+  </div>
+} @else {
+  <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    @for (c of cards(); track c.label) {
+      @if (c.link) {
+        <a [routerLink]="c.link" class="card card-hover group flex items-center justify-between p-6">
+          <div>
+            <div class="text-sm text-gray-500">{{ c.label }}</div>
+            <div class="mt-1 text-3xl font-semibold tracking-tight text-charcoal">{{ c.value }}</div>
+          </div>
+          <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition group-hover:bg-primary group-hover:text-white"><mat-icon>{{ c.icon }}</mat-icon></div>
+        </a>
+      } @else {
+        <div class="card flex items-center justify-between p-6">
+          <div>
+            <div class="text-sm text-gray-500">{{ c.label }}</div>
+            <div class="mt-1 text-3xl font-semibold tracking-tight text-charcoal">{{ c.value }}</div>
+          </div>
+          <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary"><mat-icon>{{ c.icon }}</mat-icon></div>
+        </div>
+      }
+    }
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+    <a routerLink="/dashboard/notifications" class="card card-hover flex items-center gap-4 p-6">
+      <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary/15 text-secondary-dark"><mat-icon>notifications</mat-icon></div>
+      <div><div class="font-semibold">{{ data()!.stats['notifications_non_lues'] }} notification(s) non lue(s)</div><div class="text-sm text-gray-500">Consulter mes notifications</div></div>
+    </a>
+    <a routerLink="/dashboard/messages" class="card card-hover flex items-center gap-4 p-6">
+      <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary/15 text-secondary-dark"><mat-icon>chat_bubble</mat-icon></div>
+      <div><div class="font-semibold">{{ data()!.stats['messages'] }} message(s) reçu(s)</div><div class="text-sm text-gray-500">Ouvrir la messagerie</div></div>
+    </a>
+  </div>
+
+  @if (data()!.role === 'admin') {
+    <section class="card mt-8 p-6">
+      <div class="mb-4 flex items-center justify-between">
+        <h2 class="text-base font-semibold">Biens à valider</h2>
+        <a routerLink="/dashboard/admin/biens" class="text-sm font-semibold text-primary hover:underline">Tout voir</a>
+      </div>
+      <ul class="divide-y divide-gray-100">
+        @for (b of pending(); track b.id) {
+          <li class="flex items-center justify-between gap-4 py-3">
+            <div class="min-w-0">
+              <div class="truncate font-medium">{{ b.titre }}</div>
+              <div class="text-xs text-gray-500">{{ b.type?.nom }} · {{ b.zone?.nom }} · {{ b.prix | number }} FCFA</div>
+            </div>
+            <a routerLink="/dashboard/admin/biens" class="btn btn-primary btn-sm shrink-0">Examiner</a>
+          </li>
+        } @empty { <li class="py-6 text-center text-sm text-gray-500">Aucun bien en attente 🎉</li> }
+      </ul>
+    </section>
+  }
+
+  @if (data()!.role === 'partenaire') {
+    <a routerLink="/dashboard/create-property" class="btn btn-secondary mt-8">
+      <mat-icon>add</mat-icon> Publier un nouveau bien
+    </a>
+  }
+  @if (data()!.role === 'client') {
+    <a routerLink="/properties" class="btn btn-secondary mt-8">
+      <mat-icon>search</mat-icon> Parcourir les biens
+    </a>
+  }
+}

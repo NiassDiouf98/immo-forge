@@ -1,114 +1,129 @@
-<div class="min-h-screen flex bg-stone">
+<div class="min-h-screen bg-stone lg:flex">
+
+  <!-- Voile mobile -->
+  @if (drawerOpen()) {
+    <div class="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden" (click)="drawerOpen.set(false)" aria-hidden="true"></div>
+  }
 
   <!-- SIDEBAR -->
-  <aside
-    [class.w-72]="sidebarOpen"
-    [class.w-16]="!sidebarOpen"
-    class="transition-all duration-300 bg-white/95 shadow-lg p-4"
-  >
-    <div class="flex items-center justify-between mb-6">
-      <div class="flex items-center gap-3">
-        <img src="/assets/logo-immoforge.png" alt="logo" class="w-10 h-10 rounded-full" />
-        <span *ngIf="sidebarOpen" class="font-bold text-lg">ImmoForge</span>
-      </div>
-      <button (click)="toggleSidebar()" class="p-2 rounded-full hover:bg-gray-100">
-        <mat-icon>{{ sidebarOpen ? 'chevron_left' : 'chevron_right' }}</mat-icon>
-      </button>
+  <aside class="fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-primary-dark text-white transition-transform duration-300 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0"
+         [class.-translate-x-full]="!drawerOpen()" [class.translate-x-0]="drawerOpen()">
+    <div class="flex h-20 items-center justify-between px-6">
+      <a routerLink="/" class="flex items-center gap-3">
+        <img src="/assets/logo-immoforge.png" alt="" class="h-10 w-10 rounded-full bg-white object-cover p-1" />
+        <span class="text-lg font-semibold">Immo<span class="text-secondary">Forge</span></span>
+      </a>
+      <button class="rounded-full p-1 hover:bg-white/10 lg:hidden" (click)="drawerOpen.set(false)" aria-label="Fermer le menu"><mat-icon>close</mat-icon></button>
     </div>
 
-    <nav class="flex flex-col gap-2">
-      <a routerLink="/dashboard" class="flex items-center gap-3 p-3 rounded-lg hover:bg-stone">
-        <mat-icon>dashboard</mat-icon>
-        <span *ngIf="sidebarOpen">Tableau de bord</span>
-      </a>
-
-      <a routerLink="/dashboard/properties" class="flex items-center gap-3 p-3 rounded-lg hover:bg-stone">
-        <mat-icon>home</mat-icon>
-        <span *ngIf="sidebarOpen">Mes biens</span>
-      </a>
-
-      <a routerLink="/dashboard/create-property" class="flex items-center gap-3 p-3 rounded-lg hover:bg-stone">
-        <mat-icon>add_box</mat-icon>
-        <span *ngIf="sidebarOpen">Ajouter un bien</span>
-      </a>
-
-      <a routerLink="/dashboard/bookings" class="flex items-center gap-3 p-3 rounded-lg hover:bg-stone">
-        <mat-icon>event</mat-icon>
-        <span *ngIf="sidebarOpen">Réservations</span>
-      </a>
-
-      <a routerLink="/dashboard/messages" class="flex items-center gap-3 p-3 rounded-lg hover:bg-stone">
-        <mat-icon>message</mat-icon>
-        <span *ngIf="sidebarOpen">Messages</span>
-      </a>
-
-      <a routerLink="/dashboard/settings" class="flex items-center gap-3 p-3 rounded-lg hover:bg-stone mt-4">
-        <mat-icon>settings</mat-icon>
-        <span *ngIf="sidebarOpen">Paramètres</span>
-      </a>
+    <nav class="flex-1 space-y-6 overflow-y-auto px-4 pb-6" aria-label="Menu de l'espace">
+      @for (g of groups(); track g.title) {
+        <div>
+          @if (g.title) { <p class="mb-2 px-3 text-[11px] font-semibold uppercase tracking-[.16em] text-white/40">{{ g.title }}</p> }
+          <ul class="space-y-1">
+            @for (m of g.items; track m.link) {
+              <li>
+                <a [routerLink]="m.link" routerLinkActive="!bg-white/12 !text-white [&_mat-icon]:!text-secondary" [routerLinkActiveOptions]="{ exact: !!m.exact }"
+                   class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-white/70 transition hover:bg-white/8 hover:text-white">
+                  <mat-icon class="!text-[22px] text-white/60 transition group-hover:text-white">{{ m.icon }}</mat-icon>
+                  <span class="flex-1">{{ m.label }}</span>
+                  @if (m.link.endsWith('notifications') && store.unread() > 0) {
+                    <span class="rounded-full bg-secondary px-2 py-0.5 text-[11px] font-bold text-charcoal">{{ store.unread() }}</span>
+                  }
+                </a>
+              </li>
+            }
+          </ul>
+        </div>
+      }
     </nav>
+
+    <div class="border-t border-white/10 p-4">
+      <a routerLink="/properties" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-white/70 transition hover:bg-white/8 hover:text-white">
+        <mat-icon class="!text-[22px]">storefront</mat-icon> Voir le catalogue
+      </a>
+      <button (click)="logout()" class="mt-1 flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-white/70 transition hover:bg-white/8 hover:text-white">
+        <mat-icon class="!text-[22px]">logout</mat-icon> Se déconnecter
+      </button>
+    </div>
   </aside>
 
-  <!-- MAIN -->
-  <div class="flex-1 flex flex-col">
+  <!-- CONTENU -->
+  <div class="flex min-w-0 flex-1 flex-col">
 
-    <!-- TOPBAR -->
-    <header class="flex items-center justify-between p-4 bg-white/90 shadow-sm">
-      <div class="flex items-center gap-4">
-        <button class="md:hidden p-2 rounded-md" (click)="toggleSidebar()">
-          <mat-icon>menu</mat-icon>
-        </button>
-
-        <div class="hidden sm:flex items-center gap-4">
-          <input type="text" placeholder="Rechercher un bien, une ville..."
-                 class="bg-stone rounded-full px-4 py-2 w-80 outline-none" />
-        </div>
+    <header class="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b border-gray-200/70 bg-white/85 px-4 backdrop-blur-md md:px-8">
+      <div class="flex items-center gap-3">
+        <button class="rounded-full p-2 hover:bg-stone lg:hidden" (click)="drawerOpen.set(true)" aria-label="Ouvrir le menu"><mat-icon>menu</mat-icon></button>
+        <form (ngSubmit)="doSearch()" class="relative hidden sm:block" role="search">
+          <mat-icon class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 !text-xl text-gray-400">search</mat-icon>
+          <input type="search" name="q" [(ngModel)]="search" placeholder="Rechercher un bien, une ville…" aria-label="Rechercher un bien"
+                 class="w-72 rounded-full border border-transparent bg-stone py-2 pl-10 pr-4 text-sm outline-none transition focus:border-secondary focus:bg-white focus:ring-4 focus:ring-secondary/20 lg:w-96" />
+        </form>
       </div>
 
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2">
+        <!-- État de la connexion temps réel -->
+        <span class="hidden items-center gap-2 rounded-full bg-stone px-3 py-1.5 text-xs font-medium sm:inline-flex"
+              [attr.title]="socket.connected() ? 'Mises à jour en direct actives' : 'Connexion temps réel interrompue, reconnexion…'" role="status">
+          <span class="relative flex h-2.5 w-2.5">
+            @if (socket.connected()) { <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-60"></span> }
+            <span class="relative inline-flex h-2.5 w-2.5 rounded-full" [class.bg-green-500]="socket.connected()" [class.bg-amber-400]="!socket.connected()"></span>
+          </span>
+          {{ socket.connected() ? 'En direct' : 'Reconnexion…' }}
+        </span>
+
         <!-- Notifications -->
         <div class="relative">
-          <button (click)="userMenuOpen = !userMenuOpen" class="p-2 rounded-full hover:bg-stone">
-            <mat-icon>notifications</mat-icon>
-            <span class="text-xs bg-secondary text-black rounded-full px-2 ml-1">2</span>
+          <button (click)="toggleNotifs()" class="relative rounded-full p-2 transition hover:bg-stone" aria-label="Notifications" [attr.aria-expanded]="notifOpen()">
+            <mat-icon>notifications_none</mat-icon>
+            @if (store.unread() > 0) {
+              <span class="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-secondary px-1 text-[10px] font-bold text-charcoal">{{ store.unread() }}</span>
+            }
           </button>
-          <!-- quick dropdown -->
-          <div *ngIf="userMenuOpen" class="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-lg p-4 z-50">
-            <h4 class="font-semibold mb-2">Notifications</h4>
-            <ul class="space-y-2 max-h-60 overflow-auto">
-              <li *ngFor="let n of notifications" class="text-sm">
-                <div class="flex justify-between">
-                  <div class="text-gray-700">{{ n.text }}</div>
-                  <div class="text-gray-400 text-xs">{{ n.time }}</div>
-                </div>
-              </li>
-            </ul>
-          </div>
+          @if (notifOpen()) {
+            <div class="animate-pop absolute right-0 mt-2 w-80 rounded-2xl border border-gray-100 bg-white p-4 shadow-card-hover">
+              <h4 class="mb-3 font-semibold">Notifications</h4>
+              <ul class="max-h-72 space-y-3 overflow-auto">
+                @for (n of store.items().slice(0, 6); track n.id) {
+                  <li class="flex gap-3 text-sm">
+                    <span class="mt-1.5 h-2 w-2 shrink-0 rounded-full" [class.bg-secondary]="!n.est_lu" [class.bg-gray-200]="n.est_lu"></span>
+                    <div class="min-w-0">
+                      <div class="font-medium text-charcoal">{{ n.titre }}</div>
+                      <div class="line-clamp-2 text-xs text-gray-500">{{ n.contenu }}</div>
+                      <div class="text-[11px] text-gray-400">{{ n.date_notification | date:'dd/MM HH:mm' }}</div>
+                    </div>
+                  </li>
+                } @empty { <li class="py-4 text-center text-sm text-gray-500">Aucune notification</li> }
+              </ul>
+              <a routerLink="/dashboard/notifications" class="mt-3 block text-center text-sm font-semibold text-primary hover:underline">Tout voir</a>
+            </div>
+          }
         </div>
 
-        <!-- User menu -->
+        <!-- Menu utilisateur -->
         <div class="relative">
-          <button (click)="userMenuOpen = !userMenuOpen" class="flex items-center gap-3 p-2 rounded-full hover:bg-stone">
-            <img src="/assets/users/user1.jpg" class="w-9 h-9 rounded-full object-cover" />
-            <div class="hidden md:block text-left">
-              <div class="text-sm font-semibold">Fatou N.</div>
-              <div class="text-xs text-gray-500">Propriétaire</div>
-            </div>
+          <button (click)="toggleUserMenu()" class="flex items-center gap-3 rounded-full py-1 pl-1 pr-3 transition hover:bg-stone" [attr.aria-expanded]="userMenuOpen()">
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-primary font-semibold text-white">
+              {{ (auth.fullName() || '?').charAt(0).toUpperCase() }}
+            </span>
+            <span class="hidden text-left md:block">
+              <span class="block text-sm font-semibold leading-tight">{{ auth.fullName() }}</span>
+              <span class="block text-xs text-gray-500">{{ roleLabel() }}</span>
+            </span>
           </button>
-
-          <div *ngIf="userMenuOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-lg p-2 z-50">
-            <a routerLink="/profile" class="block px-3 py-2 hover:bg-stone rounded-lg">Mon profil</a>
-            <a routerLink="/dashboard/settings" class="block px-3 py-2 hover:bg-stone rounded-lg">Paramètres</a>
-            <button (click)="logout()" class="w-full text-left px-3 py-2 hover:bg-stone rounded-lg">Se déconnecter</button>
-          </div>
+          @if (userMenuOpen()) {
+            <div class="animate-pop absolute right-0 mt-2 w-52 rounded-2xl border border-gray-100 bg-white p-2 shadow-card-hover">
+              <a routerLink="/dashboard/profile" class="block rounded-xl px-3 py-2 text-sm hover:bg-stone">Mon profil</a>
+              <a routerLink="/" class="block rounded-xl px-3 py-2 text-sm hover:bg-stone">Retour au site</a>
+              <button (click)="logout()" class="w-full rounded-xl px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50">Se déconnecter</button>
+            </div>
+          }
         </div>
       </div>
     </header>
 
-    <!-- Router outlet -->
-    <main class="p-6 overflow-auto">
+    <main class="mx-auto w-full max-w-7xl flex-1 p-4 md:p-8">
       <router-outlet></router-outlet>
     </main>
-
   </div>
 </div>

@@ -1,123 +1,65 @@
 <app-navbar></app-navbar>
 
-<section class="pt-24 pb-10 text-center">
-  <h1 class="text-4xl md:text-5xl font-bold text-charcoal">Contactez-nous</h1>
-  <p class="text-gray-600 text-lg mt-3">
-    Nous sommes là pour répondre à vos questions
-  </p>
+<section class="relative -mt-[88px] overflow-hidden pb-24 pt-[88px]">
+  <img src="/assets/properties/bg-hero-pro.jpg" alt="" class="absolute inset-0 h-full w-full object-cover" />
+  <div class="absolute inset-0 bg-gradient-to-b from-primary-dark/85 to-primary-dark/80"></div>
+  <div class="relative mx-auto max-w-7xl px-6 pt-14 text-white">
+    <p class="eyebrow !text-secondary">Contact</p>
+    <h1 class="text-4xl font-semibold tracking-tight md:text-5xl">Parlons de votre projet</h1>
+    <p class="mt-3 max-w-xl text-white/75">Une question, une demande ? Notre équipe vous répond rapidement.</p>
+  </div>
 </section>
-<section class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12 my-16">
 
-  <!-- FORMULAIRE -->
-  <div class="md:col-span-2 bg-white/80 backdrop-blur-xl shadow-2xl rounded-3xl p-10 animate-[fadeInUp_1s_ease-out]">
+<section class="relative z-10 mx-auto -mt-14 grid max-w-7xl grid-cols-1 gap-8 px-6 lg:grid-cols-3">
 
-    <h2 class="text-2xl font-bold text-charcoal mb-6">Envoyer un message</h2>
+  <form (ngSubmit)="submit()" class="card animate-in space-y-5 p-8 lg:col-span-2">
+    <h2 class="text-xl font-semibold">Envoyer un message</h2>
 
-    <!-- Name -->
-    <div class="mb-5">
-      <label class="text-gray-700 font-medium mb-1 block">Nom complet</label>
-      <div class="flex items-center border border-gray-300 rounded-full px-4 py-3 focus-within:ring-2 focus-within:ring-[#D4A44B]">
-        <mat-icon class="text-gray-500 mr-3">person</mat-icon>
-        <input [(ngModel)]="form.name" type="text" placeholder="Votre nom"
-               class="flex-1 outline-none"/>
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+      <div>
+        <label class="label" for="c-name">Nom complet *</label>
+        <input id="c-name" name="name" [(ngModel)]="form.name" type="text" placeholder="Votre nom" autocomplete="name" class="field" />
+      </div>
+      <div>
+        <label class="label" for="c-phone">Téléphone</label>
+        <input id="c-phone" name="phone" [(ngModel)]="form.phone" type="tel" placeholder="+221 77…" autocomplete="tel" class="field" />
       </div>
     </div>
+    <div>
+      <label class="label" for="c-email">Email *</label>
+      <input id="c-email" name="email" [(ngModel)]="form.email" type="email" placeholder="vous@exemple.com" autocomplete="email" class="field" />
+    </div>
+    <div>
+      <label class="label" for="c-msg">Message *</label>
+      <textarea id="c-msg" name="message" [(ngModel)]="form.message" rows="6" placeholder="Écrivez votre message ici…" class="field"></textarea>
+    </div>
 
-    <!-- Email -->
-    <div class="mb-5">
-      <label class="text-gray-700 font-medium mb-1 block">Email</label>
-      <div class="flex items-center border border-gray-300 rounded-full px-4 py-3 focus-within:ring-2 focus-within:ring-[#D4A44B]">
-        <mat-icon class="text-gray-500 mr-3">email</mat-icon>
-        <input [(ngModel)]="form.email" type="email" placeholder="exemple@mail.com"
-               class="flex-1 outline-none"/>
+    @if (error) { <div class="alert-error" role="alert">{{ error }}</div> }
+    @if (success) {
+      <div class="flex gap-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800" role="status">
+        <mat-icon class="!text-xl">check_circle</mat-icon> Message envoyé avec succès. Nous vous répondrons rapidement.
       </div>
-    </div>
+    }
 
-    <!-- Phone -->
-    <div class="mb-5">
-      <label class="text-gray-700 font-medium mb-1 block">Téléphone</label>
-      <div class="flex items-center border border-gray-300 rounded-full px-4 py-3 focus-within:ring-2 focus-within:ring-[#D4A44B]">
-        <mat-icon class="text-gray-500 mr-3">phone</mat-icon>
-        <input [(ngModel)]="form.phone" type="text" placeholder="+221 77..."
-               class="flex-1 outline-none"/>
-      </div>
-    </div>
-
-    <!-- Message -->
-    <div class="mb-5">
-      <label class="text-gray-700 font-medium mb-1 block">Message</label>
-      <textarea [(ngModel)]="form.message"
-                rows="5"
-                placeholder="Écrivez votre message ici..."
-                class="w-full border border-gray-300 rounded-2xl px-4 py-3 outline-none focus:ring-2 focus:ring-[#D4A44B]"></textarea>
-    </div>
-
-    <!-- Button -->
-    <button (click)="submit()"
-            class="w-full bg-[#D4A44B] text-black font-semibold py-3 rounded-full shadow-md hover:bg-[#D4A44B]/80 transition flex justify-center items-center">
-      <ng-container *ngIf="!loading">Envoyer</ng-container>
-      <ng-container *ngIf="loading">
-        <mat-icon class="animate-spin">autorenew</mat-icon>
-      </ng-container>
+    <button type="submit" [disabled]="loading" class="btn btn-primary !py-3.5">
+      @if (loading) { <mat-icon class="animate-spin !text-xl">autorenew</mat-icon> Envoi… } @else { <mat-icon class="!text-xl">send</mat-icon> Envoyer le message }
     </button>
+  </form>
 
-    <!-- Success -->
-    <div *ngIf="success"
-         class="mt-6 text-center bg-green-100 text-green-800 py-3 rounded-xl">
-      ✔️ Message envoyé avec succès !
-    </div>
-
-  </div>
-
-  <!-- INFO CONTACT -->
-  <div class="bg-[#0A3A32] text-white rounded-3xl p-10 shadow-xl animate-[fadeInUp_1.2s_ease-out]">
-
-    <h2 class="text-2xl font-bold mb-6">Informations</h2>
-
-    <p class="flex items-center gap-3 mb-4">
-      <mat-icon>location_on</mat-icon>
-      Dakar, Sénégal
-    </p>
-
-    <p class="flex items-center gap-3 mb-4">
-      <mat-icon>email</mat-icon>
-      contact@immoforge.sn
-    </p>
-
-    <p class="flex items-center gap-3 mb-4">
-      <mat-icon>phone</mat-icon>
-      +221 77 123 45 67
-    </p>
-
-    <p class="flex items-center gap-3 mb-4">
-      <mat-icon>schedule</mat-icon>
-      Lun - Sam : 08h - 20h
-    </p>
-
-    <a href="tel:+221771234567"
-       class="block bg-[#D4A44B] text-black font-semibold mt-8 py-3 rounded-full text-center hover:bg-[#D4A44B]/80 transition">
-      Appeler maintenant
-    </a>
-
-  </div>
-
+  <aside class="animate-in space-y-4 self-start rounded-2xl bg-primary p-8 text-white shadow-card-hover" style="animation-delay:.1s">
+    <h2 class="mb-2 text-xl font-semibold">Nos coordonnées</h2>
+    <p class="flex items-start gap-4"><span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10"><mat-icon class="!text-xl text-secondary">location_on</mat-icon></span><span class="pt-2 text-sm">Dakar, Sénégal</span></p>
+    <p class="flex items-start gap-4"><span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10"><mat-icon class="!text-xl text-secondary">mail</mat-icon></span><span class="pt-2 text-sm">contact@immoforge.sn</span></p>
+    <p class="flex items-start gap-4"><span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10"><mat-icon class="!text-xl text-secondary">call</mat-icon></span><span class="pt-2 text-sm">+221 77 123 45 67</span></p>
+    <p class="flex items-start gap-4"><span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10"><mat-icon class="!text-xl text-secondary">schedule</mat-icon></span><span class="pt-2 text-sm">Lun – Sam : 08h – 20h</span></p>
+    <a href="tel:+221771234567" class="btn btn-secondary mt-4 w-full">Appeler maintenant</a>
+  </aside>
 </section>
-<section class="max-w-7xl mx-auto px-6 my-16">
 
-  <h2 class="text-2xl md:text-3xl font-bold text-charcoal mb-6">
-    Notre localisation
-  </h2>
-
-  <iframe
-    width="100%"
-    height="450"
-    class="rounded-3xl shadow-xl"
-    loading="lazy"
-    style="border:0"
-    allowfullscreen
-    src="https://www.google.com/maps/embed/v1/place?q=Dakar&key=YOUR_GOOGLE_API_KEY">
-  </iframe>
-
+<section class="mx-auto my-16 max-w-7xl px-6">
+  <h2 class="mb-6 text-2xl font-semibold">Notre localisation</h2>
+  <iframe width="100%" height="420" class="rounded-3xl shadow-card" loading="lazy" style="border:0" title="Carte de Dakar"
+          src="https://www.openstreetmap.org/export/embed.html?bbox=-17.55,14.62,-17.38,14.78&layer=mapnik"></iframe>
 </section>
 
 <app-footer></app-footer>

@@ -1,0 +1,42 @@
+<h1 class="page-title">Référentiels</h1>
+<p class="page-subtitle mb-6">Types de biens proposés aux propriétaires et régions couvertes.</p>
+
+@if (loading()) {
+  <div class="h-64 animate-pulse rounded-2xl bg-white"></div>
+} @else {
+  <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+
+    <section class="card p-6">
+      <h2 class="mb-4 flex items-center gap-2 text-base font-semibold"><mat-icon class="text-primary">category</mat-icon> Types de biens</h2>
+      <form (ngSubmit)="add()" class="mb-4 flex gap-2">
+        <input name="newType" [(ngModel)]="newType" placeholder="Nouveau type (ex : Entrepôt)" class="field" aria-label="Nouveau type de bien" />
+        <button type="submit" class="btn btn-primary shrink-0" [disabled]="!newType.trim()">Ajouter</button>
+      </form>
+      <ul class="divide-y divide-gray-100">
+        @for (t of types(); track t.id) {
+          <li class="flex items-center gap-3 py-3">
+            @if (editingId === t.id) {
+              <input [name]="'t' + t.id" [(ngModel)]="editingName" (keyup.enter)="save(t)" class="field !py-2" [attr.aria-label]="'Renommer ' + t.nom" />
+              <button (click)="save(t)" class="btn btn-primary btn-sm">OK</button>
+              <button (click)="editingId = null" class="btn btn-outline btn-sm">Annuler</button>
+            } @else {
+              <span class="flex-1 font-medium">{{ t.nom }}</span>
+              <button (click)="edit(t)" class="btn btn-outline btn-sm">Renommer</button>
+              <button (click)="remove(t)" class="btn btn-danger btn-sm">Supprimer</button>
+            }
+          </li>
+        }
+      </ul>
+    </section>
+
+    <section class="card p-6">
+      <h2 class="mb-1 flex items-center gap-2 text-base font-semibold"><mat-icon class="text-primary">map</mat-icon> Régions</h2>
+      <p class="mb-4 text-sm text-gray-500">Les 14 régions administratives du Sénégal (liste fixe).</p>
+      <div class="flex flex-wrap gap-2">
+        @for (z of zones(); track z.id) {
+          <span class="rounded-full bg-stone px-3 py-1.5 text-sm font-medium text-gray-700">{{ z.nom }}</span>
+        }
+      </div>
+    </section>
+  </div>
+}

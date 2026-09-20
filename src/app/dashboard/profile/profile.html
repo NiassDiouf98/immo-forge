@@ -1,0 +1,57 @@
+<h1 class="page-title mb-6">Mon profil</h1>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-5xl">
+  <form (ngSubmit)="saveProfile()" class="card p-6 space-y-4">
+    <div class="flex items-center gap-4 mb-2">
+      <div class="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center text-2xl font-semibold">
+        {{ (auth.fullName() || '?').charAt(0).toUpperCase() }}
+      </div>
+      <div>
+        <div class="font-semibold text-lg">{{ auth.fullName() }}</div>
+        <div class="text-sm text-gray-500">{{ auth.user()?.email }} · {{ auth.role() }}</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label class="label" for="prenom">Prénom</label>
+        <input id="prenom" name="prenom" [(ngModel)]="form.prenom" class="field" />
+      </div>
+      <div>
+        <label class="label" for="nom">Nom</label>
+        <input id="nom" name="nom" [(ngModel)]="form.nom" class="field" />
+      </div>
+    </div>
+    <div>
+      <label class="label" for="tel">Téléphone</label>
+      <input id="tel" name="telephone" [(ngModel)]="form.telephone" class="field" />
+    </div>
+    <div>
+      <label class="label" for="email">Email</label>
+      <input id="email" [value]="auth.user()?.email" disabled class="field" />
+    </div>
+    <button type="submit" [disabled]="saving" class="btn btn-primary">
+      {{ saving ? 'Enregistrement…' : 'Enregistrer' }}
+    </button>
+  </form>
+
+  <form (ngSubmit)="changePassword()" class="card p-6 space-y-4 h-fit">
+    <h2 class="font-semibold text-lg">Changer le mot de passe</h2>
+    <div>
+      <label class="label" for="old">Mot de passe actuel</label>
+      <input id="old" name="ancien" type="password" [(ngModel)]="pwd.ancien" autocomplete="current-password" class="field" />
+    </div>
+    <div>
+      <label class="label" for="new">Nouveau mot de passe</label>
+      <input id="new" name="nouveau" type="password" [(ngModel)]="pwd.nouveau" autocomplete="new-password" class="field" />
+    </div>
+    <div>
+      <label class="label" for="conf">Confirmer</label>
+      <input id="conf" name="confirm" type="password" [(ngModel)]="pwd.confirm" autocomplete="new-password" class="field" />
+    </div>
+    @if (pwdError) { <div class="alert-error" role="alert">{{ pwdError }}</div> }
+    <button type="submit" [disabled]="changing || !pwd.ancien" class="btn btn-secondary">
+      {{ changing ? 'Modification…' : 'Modifier' }}
+    </button>
+  </form>
+</div>

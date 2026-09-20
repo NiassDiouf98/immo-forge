@@ -1,44 +1,36 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-
-interface Property {
-  title: string;
-  price: number;
-  location: string;
-  image: string;
-  type: string;
-}
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { SocketService } from '../../../../core/services/socket.service';
+import { RouterLink } from '@angular/router';
+import { ApiService } from '../../../../core/services/api.service';
+import { Bien } from '../../../../core/models/models';
+import { PropertyCard } from '../../property-card/property-card';
 
 @Component({
   selector: 'app-featured',
   standalone: true,
-  imports: [ CommonModule ],
+  imports: [ RouterLink, PropertyCard ],
   templateUrl: './featured.html',
   styleUrl: './featured.css',
 })
-export class Featured {
+export class Featured implements OnInit {
+  private api = inject(ApiService);
+  private socket = inject(SocketService);
+  private destroyRef = inject(DestroyRef);
 
-  properties: Property[] = [
-    {
-      title: "Appartement Moderne",
-      price: 35000000,
-      location: "Dakar, Point E",
-      type: "Appartement",
-      image: "/assets/prop1.png"
-    },
-    {
-      title: "Villa Haut Standing",
-      price: 125000000,
-      location: "Dakar, Almadies",
-      type: "Villa",
-      image: "./assets/prop2.png"
-    },
-    {
-      title: "Studio Meublé",
-      price: 18000000,
-      location: "Dakar, Sacré-Cœur",
-      type: "Studio",
-      image: "./assets/prop3.png"
-    }
-  ];
+  properties = signal<Bien[]>([]);
+  loading = signal(true);
+
+  ngOnInit() {
+    this.load();
+    // un bien est publié / modifié / retiré : la vitrine se met à jour seule
+    this.socket.live('catalogue:changed').pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.load());
+  }
+
+  load() {
+    this.api.biens({ limit: 3 }).subscribe({
+      next: r => { this.properties.set(r.biens); this.loading.set(false); },
+      error: () => this.loading.set(false),
+    });
+  }
 }

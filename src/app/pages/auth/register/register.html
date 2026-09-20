@@ -1,106 +1,100 @@
-<section class="min-h-screen flex items-center justify-center bg-stone px-4 py-10">
-
-  <div class="bg-white/80 backdrop-blur-xl shadow-2xl rounded-3xl w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 overflow-hidden animate-[fadeInUp_1s_ease-out]">
-
-    <!-- Left side — Form -->
-    <div class="p-10 flex flex-col justify-center">
-
-      <h2 class="text-3xl font-bold text-charcoal mb-2">
-        <mat-icon routerLink="/home" class="cursor-pointer mr-2">arrow_back</mat-icon>
-        Créer un compte
-      </h2>
-      <p class="text-gray-600 mb-8">
-        Rejoignez la plateforme immobilière moderne ImmoForge
-      </p>
-
-      <!-- Full Name -->
-      <div class="mb-5">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Nom complet</label>
-        <div class="flex items-center bg-white border border-gray-300 rounded-full px-4 py-3 focus-within:ring-2 focus-within:ring-[#D4A44B] transition">
-          <mat-icon class="text-gray-500 mr-3">person</mat-icon>
-          <input
-            type="text"
-            [(ngModel)]="name"
-            placeholder="Ex : Fatou Ndiaye"
-            class="flex-1 outline-none"
-          />
-        </div>
+<section class="flex min-h-screen bg-stone">
+  <!-- Panneau visuel -->
+  <div class="relative hidden w-1/2 overflow-hidden lg:block">
+    <img src="/assets/properties/p1.png" alt="" class="absolute inset-0 h-full w-full object-cover" />
+    <div class="absolute inset-0 bg-gradient-to-t from-primary-dark/95 via-primary-dark/50 to-primary-dark/30"></div>
+    <div class="relative flex h-full flex-col justify-between p-12 text-white">
+      <a routerLink="/" class="flex items-center gap-3">
+        <img src="/assets/logo-immoforge.png" alt="" class="h-11 w-11 rounded-full bg-white object-cover p-1" />
+        <span class="text-xl font-semibold">Immo<span class="text-secondary">Forge</span></span>
+      </a>
+      <div>
+        <h2 class="max-w-md text-4xl font-semibold leading-tight tracking-tight">Rejoignez la plateforme immobilière du Sénégal</h2>
+        <p class="mt-4 max-w-md text-white/75">Créez votre compte gratuitement pour rechercher un bien ou publier vos annonces.</p>
       </div>
-
-      <!-- Email -->
-      <div class="mb-5">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-        <div class="flex items-center bg-white border border-gray-300 rounded-full px-4 py-3 focus-within:ring-2 focus-within:ring-[#D4A44B] transition">
-          <mat-icon class="text-gray-500 mr-3">email</mat-icon>
-          <input
-            type="email"
-            [(ngModel)]="email"
-            placeholder="exemple@mail.com"
-            class="flex-1 outline-none"
-          />
-        </div>
-      </div>
-
-      <!-- Password -->
-      <div class="mb-5">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
-        <div class="flex items-center bg-white border border-gray-300 rounded-full px-4 py-3 focus-within:ring-2 focus-within:ring-[#D4A44B] transition">
-          <mat-icon class="text-gray-500 mr-3">lock</mat-icon>
-          <input
-            type="password"
-            [(ngModel)]="password"
-            placeholder="********"
-            class="flex-1 outline-none"
-          />
-        </div>
-      </div>
-
-      <!-- Confirm Password -->
-      <div class="mb-6">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Confirmer le mot de passe</label>
-        <div class="flex items-center bg-white border border-gray-300 rounded-full px-4 py-3 focus-within:ring-2 focus-within:ring-[#D4A44B] transition">
-          <mat-icon class="text-gray-500 mr-3">lock_reset</mat-icon>
-          <input
-            type="password"
-            [(ngModel)]="confirmPassword"
-            placeholder="********"
-            class="flex-1 outline-none"
-          />
-        </div>
-      </div>
-
-      <!-- Register button -->
-      <button
-        (click)="register()"
-        class="w-full bg-[#D4A44B] text-black font-semibold py-3 rounded-full shadow-md hover:bg-[#D4A44B]/80 transition flex justify-center items-center"
-      >
-        <ng-container *ngIf="!loading">
-          S’inscrire
-        </ng-container>
-
-        <ng-container *ngIf="loading">
-          <mat-icon class="animate-spin">autorenew</mat-icon>
-        </ng-container>
-      </button>
-
-      <p class="text-center text-gray-600 text-sm mt-6">
-        Vous avez déjà un compte ?
-        <a href="/login" class="text-[#0A3A32] font-semibold hover:underline">
-          Connectez-vous
-        </a>
-      </p>
-
     </div>
-
-    <!-- Right side — Illustration -->
-    <div class="hidden md:block relative">
-      <img
-        src="/assets/auth/register-bg.png"
-        class="w-full h-full object-cover"
-      />
-      <div class="absolute inset-0 bg-black/10"></div>
-    </div>
-
   </div>
 
+  <!-- Formulaire -->
+  <div class="flex w-full items-center justify-center px-6 py-10 lg:w-1/2">
+    <div class="animate-in w-full max-w-md">
+      <a routerLink="/" class="mb-8 flex items-center gap-2 text-sm text-gray-500 hover:text-primary">
+        <mat-icon class="!h-5 !w-5 !text-xl">arrow_back</mat-icon> Retour à l'accueil
+      </a>
+      <h1 class="text-3xl font-semibold tracking-tight text-charcoal">Créer un compte</h1>
+      <p class="mb-8 mt-2 text-gray-500">Quelques informations suffisent pour commencer.</p>
+
+      <form (ngSubmit)="register()" class="space-y-5">
+        <fieldset>
+          <legend class="label">Je suis</legend>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="cursor-pointer rounded-2xl border-2 p-4 text-center transition has-[:focus-visible]:ring-4 has-[:focus-visible]:ring-secondary/30"
+                   [class.border-primary]="role === 'client'" [class.bg-primary/5]="role === 'client'" [class.border-gray-200]="role !== 'client'">
+              <input type="radio" name="role" value="client" [(ngModel)]="role" class="sr-only" />
+              <mat-icon class="text-primary">search</mat-icon>
+              <span class="mt-1 block text-sm font-semibold">Client</span>
+              <span class="block text-xs text-gray-500">Je cherche un bien</span>
+            </label>
+            <label class="cursor-pointer rounded-2xl border-2 p-4 text-center transition has-[:focus-visible]:ring-4 has-[:focus-visible]:ring-secondary/30"
+                   [class.border-primary]="role === 'partenaire'" [class.bg-primary/5]="role === 'partenaire'" [class.border-gray-200]="role !== 'partenaire'">
+              <input type="radio" name="role" value="partenaire" [(ngModel)]="role" class="sr-only" />
+              <mat-icon class="text-primary">real_estate_agent</mat-icon>
+              <span class="mt-1 block text-sm font-semibold">Propriétaire</span>
+              <span class="block text-xs text-gray-500">Je publie des biens</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <div>
+            <label class="label" for="prenom">Prénom *</label>
+            <input id="prenom" name="prenom" [(ngModel)]="prenom" placeholder="Fatou" autocomplete="given-name" class="field" />
+          </div>
+          <div>
+            <label class="label" for="nom">Nom *</label>
+            <input id="nom" name="nom" [(ngModel)]="nom" placeholder="Ndiaye" autocomplete="family-name" class="field" />
+          </div>
+        </div>
+        <div>
+        <label class="label" for="email">Email *</label>
+        <div class="relative">
+          <mat-icon class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 !text-xl text-gray-400">email</mat-icon>
+          <input id="email" name="email" type="email" [(ngModel)]="email" placeholder="vous@exemple.com" autocomplete="email" class="field !pl-12"  />
+        </div>
+      </div>
+        <div>
+        <label class="label" for="telephone">Téléphone</label>
+        <div class="relative">
+          <mat-icon class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 !text-xl text-gray-400">phone</mat-icon>
+          <input id="telephone" name="telephone" type="tel" [(ngModel)]="telephone" placeholder="+221 77 123 45 67" autocomplete="tel" class="field !pl-12"  />
+        </div>
+      </div>
+        <div>
+        <label class="label" for="password">Mot de passe * (6 caractères min.)</label>
+        <div class="relative">
+          <mat-icon class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 !text-xl text-gray-400">lock</mat-icon>
+          <input id="password" name="password" type="password" [(ngModel)]="password" placeholder="••••••••" autocomplete="new-password" class="field !pl-12"  />
+        </div>
+      </div>
+        <div>
+        <label class="label" for="confirmPassword">Confirmer le mot de passe *</label>
+        <div class="relative">
+          <mat-icon class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 !text-xl text-gray-400">lock_reset</mat-icon>
+          <input id="confirmPassword" name="confirmPassword" type="password" [(ngModel)]="confirmPassword" placeholder="••••••••" autocomplete="new-password" class="field !pl-12"  />
+        </div>
+      </div>
+
+        @if (error) { <div class="alert-error" role="alert">{{ error }}</div> }
+
+        <button type="submit" [disabled]="loading" class="btn btn-primary w-full !py-3.5">
+          @if (loading) { <mat-icon class="animate-spin !text-xl">autorenew</mat-icon> Création… } @else { Créer mon compte }
+        </button>
+      </form>
+
+      <p class="mt-8 text-center text-sm text-gray-500">
+        Vous avez déjà un compte ?
+        <a routerLink="/login" class="font-semibold text-primary hover:underline">Connectez-vous</a>
+      </p>
+    </div>
+  </div>
 </section>

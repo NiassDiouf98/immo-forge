@@ -1,61 +1,51 @@
-<section
-  class="relative w-full h-[80vh] flex items-center justify-center overflow-hidden"
->
+<section class="relative -mt-[88px] flex min-h-[680px] items-center overflow-hidden pt-[88px]">
+  <img src="/assets/properties/bg-hero-pro.jpg" alt="" class="absolute inset-0 h-full w-full object-cover" />
+  <div class="absolute inset-0 bg-gradient-to-b from-primary-dark/85 via-primary-dark/60 to-primary-dark/90"></div>
 
-  <!-- Background image -->
-  <img
-    src="/assets/bg-hero1.png"
-    alt="Immobilier"
-    class="absolute inset-0 w-full h-full object-cover brightness-[0.55]"
-  />
-
-  <!-- Color overlay -->
-  <div class="absolute inset-0 "></div>
-
-  <!-- Content -->
-  <div
-    class="relative text-center text-white px-4 max-w-3xl mx-auto
-           animate-[fadeInUp_1s_ease-out]"
-  >
-    <h1 class="text-4xl md:text-5xl font-bold leading-tight drop-shadow-lg">
-      Trouvez la propriété parfaite en quelques clics
-    </h1>
-
-    <p class="text-lg md:text-xl mt-4 opacity-90">
-      Que vous souhaitiez acheter ou louer, ImmoForge vous accompagne.
-    </p>
-
-    <!-- Search bar -->
-    <div
-      class="bg-white mt-10 p-3 rounded-full shadow-xl flex flex-col md:flex-row items-center gap-3
-             animate-[fadeIn_1.3s_ease-out]"
-    >
-
-      <!-- Type -->
-      <input
-        type="text"
-        placeholder="Type de bien (Maison, Appartement...)"
-        class="flex-1 px-4 py-2 rounded-full text-black outline-none"
-        [(ngModel)]="search.type"
-      />
-
-      <!-- Localisation -->
-      <input
-        type="text"
-        placeholder="Localisation"
-        class="flex-1 px-4 py-2 rounded-full text-black outline-none"
-        [(ngModel)]="search.location"
-      />
-
-      <!-- Bouton search -->
-      <button
-        (click)="onSearch()"
-        class="bg-secondary text-black font-semibold px-8 py-3 rounded-full shadow-md
-               hover:bg-secondary/80 transition"
-      >
-        Rechercher
-      </button>
+  <div class="relative mx-auto w-full max-w-7xl px-6 py-16">
+    <div class="animate-in max-w-3xl">
+      <span class="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-medium text-white backdrop-blur">
+        <span class="h-2 w-2 rounded-full bg-secondary"></span> Immobilier au Sénégal
+      </span>
+      <h1 class="text-4xl font-semibold leading-[1.1] tracking-tight text-white md:text-6xl">
+        Trouvez le bien qui vous <span class="text-secondary">ressemble</span>
+      </h1>
+      <p class="mt-5 max-w-xl text-lg text-white/80">
+        Achetez, louez ou publiez en toute confiance. Des biens vérifiés dans toutes les régions du pays.
+      </p>
     </div>
-  </div>
 
+    <!-- Recherche -->
+    <form (ngSubmit)="onSearch()" class="animate-in mt-10 grid max-w-5xl grid-cols-1 gap-3 rounded-3xl bg-white p-3 shadow-2xl md:grid-cols-[1fr_1fr_1.3fr_auto]"
+          style="animation-delay:.1s" role="search">
+      <label class="flex flex-col rounded-2xl px-4 py-2 transition focus-within:bg-stone">
+        <span class="text-[11px] font-semibold uppercase tracking-wider text-gray-500">Type de bien</span>
+        <select name="type" class="bg-transparent py-1 text-sm font-medium text-charcoal outline-none" [(ngModel)]="search.type_id">
+          <option value="">Tous les types</option>
+          @for (t of refs.types; track t.id) { <option [value]="t.id">{{ t.nom }}</option> }
+        </select>
+      </label>
+      <label class="flex flex-col rounded-2xl px-4 py-2 transition focus-within:bg-stone md:border-l md:border-gray-100">
+        <span class="text-[11px] font-semibold uppercase tracking-wider text-gray-500">Région</span>
+        <select name="zone" class="bg-transparent py-1 text-sm font-medium text-charcoal outline-none" [(ngModel)]="search.zone_id">
+          <option value="">Toutes les régions</option>
+          @for (z of refs.zones; track z.id) { <option [value]="z.id">{{ z.nom }}</option> }
+        </select>
+      </label>
+      <label class="flex flex-col rounded-2xl px-4 py-2 transition focus-within:bg-stone md:border-l md:border-gray-100">
+        <span class="text-[11px] font-semibold uppercase tracking-wider text-gray-500">Mot-clé</span>
+        <input name="q" type="text" placeholder="Villa, piscine, terrasse…" class="bg-transparent py-1 text-sm font-medium text-charcoal outline-none placeholder:font-normal placeholder:text-gray-400"
+               [(ngModel)]="search.search" />
+      </label>
+      <button type="submit" class="btn btn-secondary !rounded-2xl px-8 py-4">
+        <span class="material-icons !text-xl">search</span> Rechercher
+      </button>
+    </form>
+
+    <ul class="animate-in mt-10 flex flex-wrap gap-x-8 gap-y-3 text-sm text-white/80" style="animation-delay:.2s">
+      <li class="flex items-center gap-2"><span class="material-icons !text-lg text-secondary">verified</span> Biens validés par nos équipes</li>
+      <li class="flex items-center gap-2"><span class="material-icons !text-lg text-secondary">forum</span> Contact direct avec le propriétaire</li>
+      <li class="flex items-center gap-2"><span class="material-icons !text-lg text-secondary">lock</span> Paiements sécurisés</li>
+    </ul>
+  </div>
 </section>

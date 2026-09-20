@@ -1,0 +1,25 @@
+<div class="flex items-center justify-between mb-6">
+  <h1 class="page-title">Notifications</h1>
+  @if (store.unread() > 0) {
+    <button (click)="store.readAll()" class="text-sm text-primary font-semibold hover:underline">Tout marquer comme lu ({{ store.unread() }})</button>
+  }
+</div>
+
+@if (!store.loaded()) {
+  <div class="space-y-3">@for (i of [1, 2, 3]; track i) { <div class="h-16 bg-white rounded-2xl animate-pulse"></div> }</div>
+} @else {
+  <ul class="space-y-3">
+    @for (n of store.items(); track n.id) {
+      <li (click)="store.read(n)" class="card p-4 flex gap-3 cursor-pointer hover:shadow" [class.border-l-4]="!n.est_lu" [class.border-secondary]="!n.est_lu">
+        <mat-icon [class.text-secondary-dark]="!n.est_lu" [class.text-gray-400]="n.est_lu">{{ n.est_lu ? 'notifications_none' : 'notifications_active' }}</mat-icon>
+        <div class="flex-1 min-w-0">
+          <div class="font-semibold" [class.font-normal]="n.est_lu">{{ n.titre }}</div>
+          <div class="text-sm text-gray-600 whitespace-pre-line">{{ n.contenu }}</div>
+          <div class="text-xs text-gray-400 mt-1">{{ n.date_notification | date:'dd/MM/yyyy HH:mm' }}</div>
+        </div>
+      </li>
+    } @empty {
+      <li class="empty-state">Aucune notification.</li>
+    }
+  </ul>
+}

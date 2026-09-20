@@ -1,122 +1,127 @@
 <app-navbar></app-navbar>
 
-<section class="relative w-full h-[70vh] overflow-hidden mb-10">
+@if (error()) {
+  <section class="mx-auto max-w-xl px-6 py-32 text-center">
+    <mat-icon class="!h-16 !w-16 !text-6xl text-gray-300">home_work</mat-icon>
+    <h1 class="mt-4 text-2xl font-semibold">{{ error() }}</h1>
+    <a routerLink="/properties" class="btn btn-primary mt-6">Retour aux biens</a>
+  </section>
+} @else if (bien(); as b) {
 
-  <!-- Main Image -->
-  <img
-    [src]="property.images[selectedImage]"
-    class="w-full h-full object-cover transition duration-500"
-  />
-
-  <!-- Thumbnails -->
-  <div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 flex gap-3 bg-black/30 p-3 rounded-full backdrop-blur-xl">
-    <div
-      *ngFor="let img of property.images; let i = index"
-      (click)="changeImage(i)"
-      class="w-20 h-14 rounded-lg overflow-hidden cursor-pointer border-2 transition"
-      [class.border-[#D4A44B]]="selectedImage === i"
-      [class.border-transparent]="selectedImage !== i"
-    >
-      <img [src]="img" class="w-full h-full object-cover" />
+  <section class="mx-auto max-w-7xl px-6 pt-4">
+    <nav class="mb-4 flex items-center gap-2 text-sm text-gray-500" aria-label="Fil d'Ariane">
+      <a routerLink="/properties" class="hover:text-primary">Propriétés</a><mat-icon class="!h-4 !w-4 !text-base">chevron_right</mat-icon>
+      <span class="truncate text-charcoal">{{ b.titre }}</span>
+    </nav>
+    <div class="relative overflow-hidden rounded-3xl bg-gray-200 shadow-card">
+      <img [src]="img(b.images?.[selectedImage]?.url_image)" [alt]="b.titre" class="h-[46vh] min-h-72 w-full object-cover transition duration-500 md:h-[58vh]" />
+      @if ((b.images?.length ?? 0) > 1) {
+        <div class="absolute bottom-4 left-1/2 flex max-w-[92%] -translate-x-1/2 gap-2 overflow-x-auto rounded-2xl bg-black/35 p-2 backdrop-blur-md">
+          @for (im of b.images; track im.id; let i = $index) {
+            <button type="button" (click)="selectedImage = i" [attr.aria-label]="'Photo ' + (i + 1)"
+                    class="h-14 w-20 shrink-0 overflow-hidden rounded-lg border-2 transition"
+                    [class.border-secondary]="selectedImage === i" [class.border-transparent]="selectedImage !== i">
+              <img [src]="img(im.url_image)" class="h-full w-full object-cover" alt="" />
+            </button>
+          }
+        </div>
+      }
     </div>
-  </div>
+  </section>
 
-</section>
+  <section class="mx-auto mt-10 grid max-w-7xl grid-cols-1 gap-10 px-6 lg:grid-cols-3">
 
-<section class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-10">
+    <div class="lg:col-span-2">
+      <div class="flex items-start justify-between gap-4">
+        <h1 class="text-3xl font-semibold tracking-tight text-charcoal md:text-4xl">{{ b.titre }}</h1>
+        <button (click)="toggleFavorite()" class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white transition hover:shadow-md"
+                [attr.aria-label]="isFavorite() ? 'Retirer des favoris' : 'Ajouter aux favoris'">
+          <mat-icon [class.text-red-500]="isFavorite()">{{ isFavorite() ? 'favorite' : 'favorite_border' }}</mat-icon>
+        </button>
+      </div>
 
-  <!-- Left (title, description) -->
-  <div class="md:col-span-2">
+      <p class="mb-5 mt-2 flex flex-wrap items-center gap-2 text-gray-600">
+        <mat-icon class="text-primary">location_on</mat-icon>
+        {{ b.zone?.nom }}{{ b.adresse ? ', ' + b.adresse : '' }}
+        @if (b.type) { <span class="ml-2 text-sm bg-secondary/30 text-secondary-dark px-3 py-1 rounded-full">{{ b.type.nom }}</span> }
+      </p>
 
-    <h1 class="text-4xl font-bold text-charcoal mb-2">
-      {{ property.title }}
-    </h1>
+      <h2 class="text-3xl font-semibold text-primary">{{ b.prix | number }} <span class="text-lg font-medium">FCFA</span></h2>
+      @if (tarif('location_mensuelle'); as t) {
+        <p class="mt-1 text-gray-600">Location : <strong>{{ t.montant | number }} FCFA / mois</strong></p>
+      }
 
-    <p class="flex items-center gap-2 text-lg text-gray-600 mb-4">
-      <mat-icon class="text-[#0A3A32]">location_on</mat-icon>
-      {{ property.location }}
-    </p>
+      <div class="my-8 grid grid-cols-3 gap-3">
+        <div class="rounded-2xl border border-gray-100 bg-white p-4 text-center shadow-card"><mat-icon class="text-primary">bed</mat-icon><div class="mt-1 text-sm font-semibold text-charcoal">{{ b.chambres ?? 0 }} Chambres</div></div>
+        <div class="rounded-2xl border border-gray-100 bg-white p-4 text-center shadow-card"><mat-icon class="text-primary">bathtub</mat-icon><div class="mt-1 text-sm font-semibold text-charcoal">{{ b.salles_bain ?? 0 }} Salles d’eau</div></div>
+        <div class="rounded-2xl border border-gray-100 bg-white p-4 text-center shadow-card"><mat-icon class="text-primary">square_foot</mat-icon><div class="mt-1 text-sm font-semibold text-charcoal">{{ b.surface ? (+b.surface | number:'1.0-0') : '—' }} m²</div></div>
+      </div>
 
-    <h2 class="text-3xl font-bold text-[#0A3A32] mb-6">
-      {{ property.price | number }} FCFA
-    </h2>
-
-    <!-- Features -->
-    <div class="flex items-center gap-6 text-gray-700 text-lg mb-8">
-
-      <span class="flex items-center gap-2">
-        <mat-icon>bed</mat-icon>
-        {{ property.bedrooms }} Chambres
-      </span>
-
-      <span class="flex items-center gap-2">
-        <mat-icon>bathtub</mat-icon>
-        {{ property.bathrooms }} Salles d’eau
-      </span>
-
-      <span class="flex items-center gap-2">
-        <mat-icon>square_foot</mat-icon>
-        {{ property.size }} m²
-      </span>
-
+      <h3 class="mb-3 text-xl font-semibold">Description</h3>
+      <p class="whitespace-pre-line leading-relaxed text-gray-600">{{ b.description }}</p>
     </div>
 
-    <p class="text-gray-700 leading-relaxed text-lg">
-      {{ property.description }}
-    </p>
+    <aside class="h-fit space-y-6 lg:sticky lg:top-28">
+      <div class="card p-6">
+        <h3 class="mb-4 text-lg font-semibold">Propriétaire</h3>
+        <p class="text-lg font-semibold">{{ fullName(b.proprietaire) }}</p>
+        @if (b.proprietaire?.telephone) {
+          <p class="flex items-center gap-2 mt-3"><mat-icon class="text-primary">phone</mat-icon> {{ b.proprietaire?.telephone }}</p>
+        }
+        <p class="flex items-center gap-2 mt-2 break-all"><mat-icon class="text-primary">email</mat-icon> {{ b.proprietaire?.email }}</p>
 
-  </div>
+        @if (b.proprietaire?.telephone) {
+          <a [href]="'tel:' + b.proprietaire?.telephone" class="btn btn-primary mt-5 w-full">Appeler maintenant</a>
+        }
+      </div>
 
-  <!-- Right (contact card) -->
-  <div class="bg-white shadow-xl rounded-3xl p-6 h-fit animate-[fadeInUp_1s_ease-out]">
-    <h3 class="text-xl font-bold text-charcoal mb-4">Contacter le propriétaire</h3>
+      @if (isOwner) {
+        <div class="card p-6 text-center text-gray-600">
+          <p>Ceci est votre bien.</p>
+          <a [routerLink]="['/dashboard/edit-property', b.id]" class="btn btn-secondary btn-sm mt-3">Modifier</a>
+        </div>
+      } @else {
+        <div class="card space-y-3 p-6">
+          <h3 class="text-lg font-semibold">Ce bien vous intéresse ?</h3>
+          @if (!auth.isLoggedIn()) {
+            <p class="text-sm text-gray-600">Connectez-vous pour envoyer une demande ou réserver.</p>
+            <a routerLink="/login" [queryParams]="{ returnUrl: '/property/' + b.id }" class="btn btn-secondary w-full">Se connecter</a>
+          } @else {
+            <textarea [(ngModel)]="demandeMessage" rows="3" placeholder="Votre message (demande de visite, questions…)"
+                      class="field"></textarea>
+            <button (click)="envoyerDemande()" [disabled]="sending"
+                    class="btn btn-secondary w-full">
+              Envoyer une demande de visite
+            </button>
 
-    <p class="text-lg font-semibold">{{ property.owner.name }}</p>
+            @if (isClient) {
+              @if (tarif('location_mensuelle')) {
+                <button (click)="reserver('location')" [disabled]="sending" class="btn btn-primary w-full">Louer ce bien</button>
+              }
+              @if (tarif('vente') || !tarif('location_mensuelle')) {
+                <button (click)="reserver('vente')" [disabled]="sending" class="btn btn-primary w-full">Acheter ce bien</button>
+              }
+            }
 
-    <p class="flex items-center gap-2 mt-4">
-      <mat-icon class="text-[#0A3A32]">phone</mat-icon> {{ property.owner.phone }}
-    </p>
+            <hr class="my-2" />
+            <input [(ngModel)]="messageText" (keyup.enter)="envoyerMessage()" placeholder="Écrire au propriétaire…"
+                   class="field" />
+            <button (click)="envoyerMessage()" [disabled]="sending || !messageText.trim()"
+                    class="btn btn-outline w-full">Envoyer le message</button>
+          }
+        </div>
+      }
+    </aside>
+  </section>
 
-    <p class="flex items-center gap-2 mt-2">
-      <mat-icon class="text-[#0A3A32]">email</mat-icon> {{ property.owner.email }}
-    </p>
-
-    <a href="tel:{{ property.owner.phone }}"
-       class="block w-full mt-6 bg-[#0A3A32] text-white text-center py-3 rounded-full font-semibold hover:bg-[#0A3A32]/90">
-      Appeler maintenant
-    </a>
-
-    <a href="mailto:{{ property.owner.email }}"
-       class="block w-full mt-3 bg-[#D4A44B] text-black text-center py-3 rounded-full font-semibold hover:bg-[#D4A44B]/80">
-      Envoyer un email
-    </a>
-  </div>
-
-</section>
-
-<section class="max-w-7xl mx-auto px-6 my-16">
-
-  <h3 class="text-3xl font-bold text-charcoal mb-6">Plan du bien</h3>
-
-  <img [src]="property.planImage"
-       class="w-full rounded-3xl shadow-lg animate-[fadeInUp_1s_ease-out]" />
-
-</section>
-
-<section class="max-w-7xl mx-auto px-6 my-16">
-
-  <h3 class="text-3xl font-bold text-charcoal mb-6">Localisation</h3>
-
-  <iframe
-    width="100%"
-    height="450"
-    class="rounded-3xl shadow-xl"
-    style="border:0"
-    loading="lazy"
-    allowfullscreen
-    [src]="safeMapUrl">
-  </iframe>
-
-</section>
+  @if (mapUrl) {
+    <section class="mx-auto my-16 max-w-7xl px-6">
+      <h3 class="mb-6 text-2xl font-semibold">Localisation</h3>
+      <iframe width="100%" height="450" class="rounded-3xl shadow-card" style="border:0" loading="lazy" title="Carte" [src]="mapUrl"></iframe>
+    </section>
+  }
+} @else {
+  <div class="mx-auto max-w-7xl px-6 py-24"><div class="h-96 animate-pulse rounded-3xl bg-white"></div></div>
+}
 
 <app-footer></app-footer>

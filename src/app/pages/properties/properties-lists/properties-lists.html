@@ -1,124 +1,78 @@
 <app-navbar></app-navbar>
 
-<!-- hero -->
-<section class="pt-16 pb-12 text-center text-white relative h-80 bg-[url('/assets/properties/bg-hero-pro.jpg')] bg-cover bg-center brightness-[0.75] -mb-20">
-  <h1 class="text-4xl md:text-5xl font-bold text-white">Trouvez votre propriété idéale</h1>
-  <p class="text-white text-lg mt-3">
-    Découvrez une sélection exclusive de biens immobiliers premium
-  </p>
+<!-- Bandeau -->
+<section class="relative -mt-[88px] overflow-hidden pb-28 pt-[88px]">
+  <img src="/assets/properties/bg-hero-pro.jpg" alt="" class="absolute inset-0 h-full w-full object-cover" />
+  <div class="absolute inset-0 bg-gradient-to-b from-primary-dark/85 to-primary-dark/75"></div>
+  <div class="relative mx-auto max-w-7xl px-6 pt-14 text-white">
+    <p class="eyebrow !text-secondary">Catalogue</p>
+    <h1 class="text-4xl font-semibold tracking-tight md:text-5xl">Trouvez votre propriété idéale</h1>
+    <p class="mt-3 max-w-xl text-white/75">Une sélection de biens validés, à acheter ou à louer dans tout le Sénégal.</p>
+  </div>
 </section>
 
-<!-- filters -->
-<section class="max-w-7xl mx-auto px-6 mb-16 relative z-10">
-  <div class="bg-white shadow-xl rounded-3xl p-6 grid grid-cols-1 md:grid-cols-5 gap-4 animate-[fadeInUp_0.8s_ease-out]">
-
-    <!-- Type -->
-    <div class="flex flex-col">
-      <label class="text-gray-700 font-medium mb-1 flex items-center gap-1"><mat-icon>home</mat-icon> Type</label>
-      <select [(ngModel)]="filters.type" class="rounded-2xl border-gray-300 p-3 border-b-2 outline-none">
+<!-- Filtres -->
+<section class="relative z-10 mx-auto -mt-16 mb-12 max-w-7xl px-6">
+  <form (ngSubmit)="applyFilters()" class="animate-in grid grid-cols-1 gap-3 rounded-3xl bg-white p-4 shadow-card-hover sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr_auto]" role="search">
+    <div>
+      <label class="label" for="f-search">Mot-clé</label>
+      <input id="f-search" name="search" [(ngModel)]="filters.search" type="text" placeholder="Villa, piscine…" class="field" />
+    </div>
+    <div>
+      <label class="label" for="f-type">Type</label>
+      <select id="f-type" name="type_id" [(ngModel)]="filters.type_id" class="field">
         <option value="">Tous</option>
-        <option>Appartement</option>
-        <option>Villa</option>
-        <option>Studio</option>
+        @for (t of refs.types; track t.id) { <option [value]="t.id">{{ t.nom }}</option> }
       </select>
     </div>
-
-    <!-- Location -->
     <div>
-      <label class="text-gray-700 font-medium mb-1 flex items-center gap-1"><mat-icon>location_on</mat-icon> Localisation</label>
-      <input [(ngModel)]="filters.location" type="text" placeholder="Ex : Dakar"
-             class="rounded-2xl border-gray-300 p-3 w-full border-b-2 outline-none" />
+      <label class="label" for="f-zone">Région</label>
+      <select id="f-zone" name="zone_id" [(ngModel)]="filters.zone_id" class="field">
+        <option value="">Toutes</option>
+        @for (z of refs.zones; track z.id) { <option [value]="z.id">{{ z.nom }}</option> }
+      </select>
     </div>
-
-    <!-- Prix min -->
     <div>
-      <label class="text-gray-700 font-medium mb-1 flex items-center gap-1"><mat-icon>attach_money</mat-icon> Prix min</label>
-      <input [(ngModel)]="filters.minPrice" type="number" placeholder="Min"
-             class="rounded-2xl border-gray-300 p-3 w-full border-b-2 outline-none" />
+      <label class="label" for="f-min">Prix min (FCFA)</label>
+      <input id="f-min" name="prix_min" [(ngModel)]="filters.prix_min" type="number" min="0" placeholder="0" class="field" />
     </div>
-
-    <!-- Prix max -->
     <div>
-      <label class="text-gray-700 font-medium mb-1 flex items-center gap-1"><mat-icon>attach_money</mat-icon> Prix max</label>
-      <input [(ngModel)]="filters.maxPrice" type="number" placeholder="Max"
-             class="rounded-2xl border-gray-300 p-3 w-full border-b-2 outline-none" />
+      <label class="label" for="f-max">Prix max (FCFA)</label>
+      <input id="f-max" name="prix_max" [(ngModel)]="filters.prix_max" type="number" min="0" placeholder="Illimité" class="field" />
     </div>
-
-    <!-- Boutons -->
-    <div class="flex items-end gap-3">
-      <button (click)="applyFilters()"
-              class="bg-[#0A3A32] text-white px-4 py-3 rounded-full w-full font-semibold hover:bg-[#0A3A32]/90 flex items-center gap-1">
-        <mat-icon>filter_list</mat-icon> Filtrer
-      </button>
-
-      <button (click)="resetFilters()"
-              class="px-4 py-3 rounded-full bg-gray-200 hover:bg-gray-300 font-semibold flex items-center gap-1">
-        <mat-icon>refresh</mat-icon> Reset
-      </button>
+    <div class="flex items-end gap-2">
+      <button type="submit" class="btn btn-primary flex-1 !py-3"><mat-icon class="!text-lg">tune</mat-icon> Filtrer</button>
+      <button type="button" (click)="resetFilters()" class="btn btn-outline !px-4 !py-3" aria-label="Réinitialiser les filtres"><mat-icon class="!text-lg">refresh</mat-icon></button>
     </div>
-
-  </div>
+  </form>
 </section>
 
-<section class="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+<section class="mx-auto max-w-7xl px-6">
+  @if (!loading()) {
+    <p class="mb-6 text-sm font-medium text-gray-500">{{ pagination().total }} bien{{ pagination().total > 1 ? 's' : '' }} trouvé{{ pagination().total > 1 ? 's' : '' }}</p>
+  }
 
-  <div *ngFor="let p of properties"
-       class="bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition transform hover:-translate-y-1 animate-[fadeInUp_1s_ease-out]">
-
-    <!-- Image -->
-    <div class="relative">
-      <img [src]="p.image" class="w-full h-64 object-cover" />
-      <span class="absolute top-4 left-4 bg-[#D4A44B] text-black px-4 py-2 rounded-full font-semibold">
-        {{ p.price | number }} FCFA
-      </span>
+  @if (error()) {
+    <div class="alert-error text-center">{{ error() }}</div>
+  } @else if (loading()) {
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      @for (i of [1, 2, 3]; track i) { <div class="h-[26rem] animate-pulse rounded-2xl bg-white"></div> }
     </div>
-
-    <!-- Content -->
-    <div class="p-6 space-y-2">
-      <h3 class="text-xl font-bold text-charcoal">{{ p.title }}</h3>
-      <p class="text-gray-600 flex items-center gap-1">
-        <mat-icon class="text-[#0A3A32]">location_on</mat-icon>
-        {{ p.location }}
-      </p>
-
-      <div class="flex items-center gap-4 text-gray-700 mt-4">
-        <span class="flex items-center gap-1">
-          <mat-icon>bed</mat-icon> {{ p.bedrooms }}
-        </span>
-        <span class="flex items-center gap-1">
-          <mat-icon>bathtub</mat-icon> {{ p.bathrooms }}
-        </span>
-        <span class="flex items-center gap-1">
-          <mat-icon>square_foot</mat-icon> {{ p.size }} m²
-        </span>
-      </div>
-
-      <a [routerLink]="['/property', p.id]"
-         class="block mt-6 text-center bg-[#0A3A32] text-white py-3 rounded-full font-semibold hover:bg-[#0A3A32]/90">
-        Voir les détails
-      </a>
+  } @else {
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      @for (p of biens(); track p.id) {
+        <app-property-card [bien]="p" [favoriteToggle]="true" [isFavorite]="favoris().has(p.id)" (toggleFavorite)="toggleFavorite($event)" />
+      } @empty {
+        <div class="empty-state col-span-full">
+          <mat-icon class="!h-12 !w-12 !text-5xl text-gray-300">search_off</mat-icon>
+          <p class="font-medium text-charcoal">Aucun bien ne correspond à votre recherche</p>
+          <button type="button" (click)="resetFilters()" class="btn btn-outline btn-sm mt-2">Réinitialiser les filtres</button>
+        </div>
+      }
     </div>
+  }
 
-  </div>
-
-</section>
-
-<section class="max-w-7xl mx-auto px-6 my-16 flex justify-center gap-3">
-  <button class="w-10 h-10 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center">
-    <mat-icon>chevron_left</mat-icon>
-  </button>
-
-  <button class="w-10 h-10 rounded-full bg-[#0A3A32] text-white flex items-center justify-center font-bold">
-    1
-  </button>
-
-  <button class="w-10 h-10 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center">
-    2
-  </button>
-
-  <button class="w-10 h-10 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center">
-    <mat-icon>chevron_right</mat-icon>
-  </button>
+  <app-pagination [page]="pagination().page" [totalPages]="pagination().totalPages" (pageChange)="goToPage($event)" />
 </section>
 
 <app-footer></app-footer>

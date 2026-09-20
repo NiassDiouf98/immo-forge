@@ -1,0 +1,60 @@
+<div class="flex items-center justify-between mb-6 gap-4 flex-wrap">
+  <div>
+    <h1 class="page-title">Utilisateurs</h1>
+    <p class="page-subtitle">{{ pagination().total }} compte(s)</p>
+  </div>
+  <div class="flex flex-wrap gap-3">
+  <input type="search" name="search" [(ngModel)]="search" (ngModelChange)="onSearch()" placeholder="Rechercher (nom, email)…" class="field !w-64 !rounded-full !py-2" aria-label="Rechercher un utilisateur" />
+  <select [(ngModel)]="roleFilter" (ngModelChange)="load(1)" class="field !w-auto !rounded-full !py-2" aria-label="Filtrer par rôle">
+    <option value="">Tous les rôles</option>
+    <option value="1">Administrateurs</option>
+    <option value="2">Propriétaires</option>
+    <option value="3">Clients</option>
+  </select>
+  </div>
+</div>
+
+@if (error()) {
+  <div class="alert-error">{{ error() }}</div>
+} @else if (loading()) {
+  <div class="h-64 bg-white rounded-2xl animate-pulse"></div>
+} @else {
+  <div class="card overflow-x-auto">
+    <table class="table-modern">
+      <thead>
+        <tr><th >Nom</th><th >Email</th><th >Rôle</th><th >Statut</th><th >Inscrit le</th><th ></th></tr>
+      </thead>
+      <tbody>
+        @for (u of users(); track u.id) {
+          <tr>
+            <td class="font-medium">{{ fullName(u) }}</td>
+            <td >{{ u.email }}</td>
+            <td>
+              @if (u.id !== me()?.id) {
+                <select [ngModel]="u.role?.nom" (ngModelChange)="changeRole(u, $event)" [name]="'r' + u.id" class="field !w-auto !rounded-full !py-1.5 !text-xs" [attr.aria-label]="'Rôle de ' + fullName(u)">
+                  <option value="client">Client</option>
+                  <option value="partenaire">Propriétaire</option>
+                  <option value="admin">Administrateur</option>
+                </select>
+              } @else { <span class="capitalize">{{ u.role?.nom }} (vous)</span> }
+            </td>
+            <td ><app-badge [value]="u.statut" /></td>
+            <td class="whitespace-nowrap">{{ u.date_creation | date:'dd/MM/yyyy' }}</td>
+            <td class="text-right whitespace-nowrap">
+              @if (u.id !== me()?.id) {
+                @if (u.statut === 'actif') {
+                  <button (click)="setStatut(u, 'suspendu')" class="btn btn-danger btn-sm">Suspendre</button>
+                } @else {
+                  <button (click)="setStatut(u, 'actif')" class="btn btn-primary btn-sm">Réactiver</button>
+                }
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="6" class="!py-14 text-center text-gray-500">Aucun utilisateur.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <app-pagination [page]="pagination().page" [totalPages]="pagination().totalPages" (pageChange)="load($event)" />
+}

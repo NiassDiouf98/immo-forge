@@ -1,45 +1,28 @@
-<section id="cities" class="py-20 bg-white">
-
-  <!-- Title -->
-  <div class="text-center mb-14 animate-[fadeInUp_1s_ease-out]">
-    <h2 class="text-3xl md:text-4xl font-bold text-charcoal">
-      Explorer les Villes Populaires
-    </h2>
-    <p class="mt-2 text-gray-600 text-lg">
-      Trouvez un bien dans les zones les plus recherchées au Sénégal
-    </p>
-  </div>
-
-  <!-- Grid -->
-  <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-
-    <div
-      *ngFor="let c of cities"
-      class="relative h-64 rounded-2xl overflow-hidden cursor-pointer shadow-lg
-             transform hover:-translate-y-2 hover:shadow-2xl transition duration-300
-             animate-[fadeInUp_1.2s_ease-out]"
-      (click)="goToCity(c.name)"
-    >
-
-      <!-- Background image -->
-      <img
-        [src]="c.image"
-        class="absolute inset-0 w-full h-full object-cover transition duration-700 hover:scale-110"
-        [alt]="c.name"
-      />
-
-      <!-- Overlay -->
-      <div class="absolute inset-0 bg-black/40"></div>
-
-      <!-- Content -->
-      <div class="absolute bottom-4 left-4 text-white drop-shadow-lg">
-        <h3 class="text-2xl font-bold">{{ c.name }}</h3>
-        <p class="text-sm text-gray-200">
-          {{ c.properties }} propriétés
-        </p>
-      </div>
-
+<section id="cities" class="bg-stone py-20">
+  <div class="mx-auto max-w-7xl px-6">
+    <div class="mb-12">
+      <p class="eyebrow">Destinations</p>
+      <h2 class="section-title">Explorer par région</h2>
+      <p class="mt-2 text-gray-500">Les zones les plus recherchées au Sénégal.</p>
     </div>
 
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      @for (c of cities(); track c.name) {
+        <button type="button" (click)="goToCity(c)"
+                class="group relative h-72 overflow-hidden rounded-2xl text-left shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-card-hover">
+          <img [src]="c.image" [alt]="c.name" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110" loading="lazy" />
+          <div class="absolute inset-0 bg-gradient-to-t from-primary-dark/90 via-primary-dark/20 to-transparent"></div>
+          <div class="absolute bottom-5 left-5 right-5 flex items-end justify-between text-white">
+            <div>
+              <h3 class="text-2xl font-semibold">{{ c.name }}</h3>
+              <p class="text-sm text-white/80">{{ c.properties }} propriété{{ c.properties > 1 ? 's' : '' }}</p>
+            </div>
+            <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 backdrop-blur transition group-hover:bg-secondary group-hover:text-charcoal">
+              <span class="material-icons !text-xl">arrow_outward</span>
+            </span>
+          </div>
+        </button>
+      }
+    </div>
   </div>
 </section>

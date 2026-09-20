@@ -1,0 +1,41 @@
+<div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+  <div>
+    <h1 class="page-title">Transactions</h1>
+    <p class="page-subtitle">Chiffre d'affaires encaissé : <strong class="text-primary">{{ revenus() | number }} FCFA</strong></p>
+  </div>
+  <select [(ngModel)]="status" (ngModelChange)="load(1)" class="field !w-auto !rounded-full !py-2" aria-label="Filtrer par statut">
+    <option value="">Tous les statuts</option>
+    <option value="en_attente">En attente</option>
+    <option value="payee">Payées</option>
+    <option value="annulee">Annulées</option>
+  </select>
+</div>
+
+@if (error()) {
+  <div class="alert-error">{{ error() }}</div>
+} @else if (loading()) {
+  <div class="h-64 animate-pulse rounded-2xl bg-white"></div>
+} @else {
+  <div class="card overflow-x-auto">
+    <table class="table-modern">
+      <thead><tr><th>#</th><th>Bien</th><th>Client</th><th>Type</th><th>Montant</th><th>Paiement</th><th>Statut</th><th>Date</th></tr></thead>
+      <tbody>
+        @for (t of transactions(); track t.id) {
+          <tr>
+            <td class="text-gray-400">{{ t.id }}</td>
+            <td class="font-medium"><a [routerLink]="['/property', t.bien_id]" class="hover:underline">{{ t.bien?.titre }}</a></td>
+            <td>{{ fullName($any(t).user) }}<div class="text-xs text-gray-500">{{ $any(t).user?.email }}</div></td>
+            <td class="capitalize">{{ t.type_transaction }}</td>
+            <td class="whitespace-nowrap">{{ t.montant | number }} FCFA</td>
+            <td class="capitalize">{{ t.paiements?.[0]?.mode_paiement?.replace('_', ' ') || '—' }}</td>
+            <td><app-badge [value]="t.status" /></td>
+            <td class="whitespace-nowrap">{{ t.date_transaction | date:'dd/MM/yyyy' }}</td>
+          </tr>
+        } @empty {
+          <tr><td colspan="8" class="!py-14 text-center text-gray-500">Aucune transaction.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <app-pagination [page]="pagination().page" [totalPages]="pagination().totalPages" (pageChange)="load($event)" />
+}

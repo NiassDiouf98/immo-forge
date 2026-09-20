@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Navbar } from "../../shared/components/navbar/navbar";
 import { Footer } from "../../shared/components/footer/footer";
 import { HeroSection } from "../../shared/components/sections/hero-section/hero-section";
@@ -9,7 +10,7 @@ import { Testimonials } from "../../shared/components/sections/testimonials/test
 
 @Component({
   selector: 'app-home',
-  imports: [Navbar, Footer, HeroSection, Featured, ServiceSection, CitiesSection, Testimonials],
+  imports: [RouterLink, Navbar, Footer, HeroSection, Featured, ServiceSection, CitiesSection, Testimonials],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

@@ -1,65 +1,23 @@
-<section id="properties" class="py-20 bg-stone relative">
-
-  <!-- Title -->
-  <div class="text-center mb-12 animate-[fadeInUp_1s_ease-out]">
-    <h2 class="text-3xl md:text-4xl font-bold text-charcoal">
-      Propriétés en vedette
-    </h2>
-    <p class="mt-2 text-gray-600 text-lg">
-      Découvrez nos biens les plus consultés cette semaine
-    </p>
-  </div>
-
-  <!-- Grid Properties -->
-  <div
-    class="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
-  >
-
-    <div
-      *ngFor="let p of properties"
-      class="bg-white rounded-2xl shadow-lg overflow-hidden
-             hover:shadow-2xl transition shadow-gray-300
-             transform hover:-translate-y-2 duration-300
-             animate-[fadeIn_1s_ease-out]"
-    >
-
-      <!-- Image -->
-      <div class="h-56 w-full overflow-hidden">
-        <img
-          [src]="p.image"
-          [alt]="p.title"
-          class="w-full h-full object-cover hover:scale-110 transition duration-700"
-        >
+<section id="properties" class="bg-stone py-20">
+  <div class="mx-auto max-w-7xl px-6">
+    <div class="mb-12 flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p class="eyebrow">À la une</p>
+        <h2 class="section-title">Propriétés en vedette</h2>
+        <p class="mt-2 text-gray-500">Nos derniers biens, validés et prêts à visiter.</p>
       </div>
-
-      <!-- Content -->
-      <div class="p-5 flex flex-col gap-2">
-
-        <span class="inline-block bg-secondary text-black px-4 py-1 rounded-full text-sm w-fit shadow">
-          {{ p.type }}
-        </span>
-
-        <h3 class="text-xl font-semibold text-charcoal mt-2">
-          {{ p.title }}
-        </h3>
-
-        <p class="text-gray-600 text-sm">
-          {{ p.location }}
-        </p>
-
-        <p class="text-primary text-lg font-bold mt-2">
-          {{ p.price | number }} FCFA
-        </p>
-
-        <button
-          class="mt-4 bg-primary text-white px-5 py-2 rounded-full hover:bg-primary/90 transition"
-        >
-          Voir détails
-        </button>
-
-      </div>
-
+      <a routerLink="/properties" class="btn btn-outline">
+        Voir tous les biens <span class="material-icons !text-lg">arrow_forward</span>
+      </a>
     </div>
 
+    <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      @if (loading()) {
+        @for (i of [1, 2, 3]; track i) { <div class="h-[26rem] animate-pulse rounded-2xl bg-white"></div> }
+      } @else {
+        @for (p of properties(); track p.id) { <app-property-card [bien]="p" /> }
+        @empty { <p class="col-span-full py-10 text-center text-gray-500">Aucun bien publié pour le moment.</p> }
+      }
+    </div>
   </div>
 </section>

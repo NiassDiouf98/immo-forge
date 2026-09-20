@@ -1,0 +1,37 @@
+<h1 class="page-title mb-6">{{ mode() === 'recues' ? 'Demandes reçues' : 'Mes demandes' }}</h1>
+
+@if (error()) {
+  <div class="alert-error">{{ error() }}</div>
+} @else if (loading()) {
+  <div class="space-y-4">@for (i of [1, 2, 3]; track i) { <div class="h-24 animate-pulse rounded-2xl bg-white"></div> }</div>
+} @else {
+  <div class="space-y-4">
+    @for (d of demandes(); track d.id) {
+      <div class="card p-4 flex flex-col md:flex-row gap-4 md:items-center">
+        @if (mode() === 'mes') { <img [src]="img(d)" alt="" class="w-full md:w-28 h-20 rounded-xl object-cover" /> }
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <a [routerLink]="['/property', d.bien_id]" class="font-semibold text-charcoal hover:underline">{{ d.bien?.titre }}</a>
+            <app-badge [value]="d.statut" />
+          </div>
+          @if (mode() === 'recues') {
+            <p class="text-sm text-gray-600">De {{ fullName(d.client) }} · {{ d.client?.email }}{{ d.client?.telephone ? ' · ' + d.client?.telephone : '' }}</p>
+          }
+          @if (d.message) { <p class="text-sm text-gray-700 mt-1 italic">« {{ d.message }} »</p> }
+          <p class="text-xs text-gray-400 mt-1">{{ d.date_demande | date:'dd/MM/yyyy HH:mm' }}</p>
+        </div>
+        @if (mode() === 'recues' && d.statut === 'en_attente') {
+          <div class="flex gap-2">
+            <button (click)="decide(d, 'acceptee')" class="btn btn-primary btn-sm">Accepter</button>
+            <button (click)="decide(d, 'refusee')" class="btn btn-danger btn-sm">Refuser</button>
+          </div>
+        }
+      </div>
+    } @empty {
+      <div class="empty-state">
+        <mat-icon class="!text-5xl !w-12 !h-12">inbox</mat-icon>
+        <p class="mt-2">Aucune demande pour le moment.</p>
+      </div>
+    }
+  </div>
+}

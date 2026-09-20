@@ -1,0 +1,41 @@
+<div class="flex items-center justify-between mb-6 gap-4 flex-wrap">
+  <h1 class="page-title">Mes biens</h1>
+  <a routerLink="/dashboard/create-property" class="btn btn-secondary">
+    <mat-icon>add</mat-icon> Ajouter un bien
+  </a>
+</div>
+
+@if (error()) {
+  <div class="alert-error">{{ error() }}</div>
+} @else if (loading()) {
+  <div class="space-y-4">@for (i of [1, 2, 3]; track i) { <div class="h-28 bg-white rounded-2xl animate-pulse"></div> }</div>
+} @else {
+  <div class="space-y-4">
+    @for (b of biens(); track b.id) {
+      <div class="card p-4 flex flex-col sm:flex-row gap-4 sm:items-center">
+        <img [src]="img(b)" alt="" class="w-full sm:w-32 h-24 rounded-xl object-cover" />
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <h3 class="font-semibold text-charcoal truncate">{{ b.titre }}</h3>
+            <app-badge [value]="b.status?.nom ?? ''" />
+          </div>
+          <p class="text-sm text-gray-500">{{ b.type?.nom }} · {{ b.zone?.nom }} · {{ b.prix | number }} FCFA</p>
+          @if (b.raison_refus) { <p class="text-sm text-red-600 mt-1">Motif du refus : {{ b.raison_refus }}</p> }
+        </div>
+        <div class="flex gap-2">
+          @if (b.status_id === 2) {
+            <a [routerLink]="['/property', b.id]" class="btn btn-outline btn-sm">Voir</a>
+          }
+          <a [routerLink]="['/dashboard/edit-property', b.id]" class="btn btn-primary btn-sm">Modifier</a>
+          <button (click)="remove(b)" class="btn btn-danger btn-sm">Supprimer</button>
+        </div>
+      </div>
+    } @empty {
+      <div class="empty-state">
+        <mat-icon class="!text-5xl !w-12 !h-12">home_work</mat-icon>
+        <p class="mt-2">Vous n'avez publié aucun bien.</p>
+      </div>
+    }
+  </div>
+  <app-pagination [page]="pagination().page" [totalPages]="pagination().totalPages" (pageChange)="load($event)" />
+}

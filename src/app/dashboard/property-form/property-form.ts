@@ -1,102 +1,113 @@
-import { Component, OnInit } from '@angular/core';
-import { PropertyService, Property } from '../property.service';
-import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-
+import { Router, RouterLink } from '@angular/router';
+import { ApiService, BienPayload } from '../../core/services/api.service';
+import { ToastService } from '../../core/services/toast.service';
+import { Refs } from '../../core/models/models';
+import { errorMessage } from '../../utils/helpers';
 
 @Component({
   selector: 'app-property-form',
-  imports: [ CommonModule, FormsModule, MatIconModule ],
+  imports: [CommonModule, FormsModule, MatIconModule, RouterLink],
   templateUrl: './property-form.html',
   styleUrl: './property-form.css',
 })
 export class PropertyForm implements OnInit {
-  isEdit = false;
-  id?: number;
-  model: Property = {
-    title: '',
-    location: '',
-    price: 0,
-    bedrooms: 1,
-    bathrooms: 1,
-    size: 0,
-    description: '',
-    images: [],
-    status: 'draft'
+  private api = inject(ApiService);
+  private router = inject(Router);
+  private toast = inject(ToastService);
+
+  /** Présent seulement sur /dashboard/edit-property/:id */
+  id = input<string>();
+
+  refs: Refs = { zones: [], types: [], statuts: [] };
+  model = {
+    titre: '', description: '', type_id: '', zone_id: '', adresse: '',
+    latitude: '', longitude: '', prix: '', chambres: 1, salles_bain: 1, surface: '',
+    loyer: '',
   };
-
-  // local images preview
-  imageFiles: File[] = [];
-  imagePreviews: (string | ArrayBuffer | null)[] = [];
-
-  // map
-  lat = 14.6928;
-  lng = -17.4467;
+  /** URLs déjà enregistrées (édition) */
+  existingImages = signal<string[]>([]);
+  newFiles: File[] = [];
+  newPreviews = signal<string[]>([]);
 
   loading = false;
+  loadingData = signal(false);
+  error = '';
 
-  constructor(
-    private svc: PropertyService,
-    private route: ActivatedRoute,
-    private router: Router
-  ){}
+  get isEdit() { return !!this.id(); }
 
   ngOnInit() {
-    const param = this.route.snapshot.paramMap.get('id');
-    if(param) {
-      this.isEdit = true;
-      this.id = Number(param);
-      this.svc.get(this.id!).subscribe(p => {
-        this.model = p;
-        // for edit: show current images as previews (server urls)
-        this.imagePreviews = p.images?.map(i=>i) || [];
+    this.api.refs().subscribe({ next: r => (this.refs = r), error: () => {} });
+    if (this.id()) {
+      this.loadingData.set(true);
+      this.api.bien(this.id()!).subscribe({
+        next: b => {
+          this.model = {
+            titre: b.titre, description: b.description ?? '', type_id: String(b.type_id), zone_id: String(b.zone_id ?? ''),
+            adresse: b.adresse ?? '', latitude: b.latitude ?? '', longitude: b.longitude ?? '', prix: b.prix ?? '',
+            chambres: b.chambres ?? 0, salles_bain: b.salles_bain ?? 0, surface: b.surface ?? '',
+            loyer: String(b.tarifs?.find(t => t.type_tarif === 'location_mensuelle')?.montant ?? ''),
+          };
+          this.existingImages.set((b.images ?? []).map(i => i.url_image));
+          this.loadingData.set(false);
+        },
+        error: e => { this.error = errorMessage(e, 'Bien introuvable'); this.loadingData.set(false); },
       });
     }
   }
 
-  onFilesSelected(evt: any) {
-    const files: FileList = evt.target.files;
-    for(let i=0;i<files.length;i++){
-      const f = files.item(i)!;
-      this.imageFiles.push(f);
+  img(u: string) { return this.api.fileUrl(u); }
+
+  onFilesSelected(evt: Event) {
+    const files = Array.from((evt.target as HTMLInputElement).files ?? []);
+    for (const f of files) {
+      this.newFiles.push(f);
       const reader = new FileReader();
-      reader.onload = (e) => this.imagePreviews.push((e.target as any).result);
+      reader.onload = e => this.newPreviews.update(p => [...p, String(e.target?.result)]);
       reader.readAsDataURL(f);
     }
+    (evt.target as HTMLInputElement).value = '';
   }
 
-  removePreview(index: number) {
-    this.imagePreviews.splice(index,1);
-    this.imageFiles.splice(index,1);
+  removeExisting(i: number) { this.existingImages.update(a => a.filter((_, idx) => idx !== i)); }
+  removeNew(i: number) {
+    this.newFiles.splice(i, 1);
+    this.newPreviews.update(a => a.filter((_, idx) => idx !== i));
   }
 
   submit() {
-    this.loading = true;
-    const payload = { ...this.model };
-    if(this.isEdit && this.id){
-      this.svc.update(this.id, payload).subscribe(()=> {
-        this.uploadImagesIfAny().then(()=> { this.loading=false; this.router.navigate(['/dashboard/properties']); });
-      });
-    } else {
-      this.svc.create(payload).subscribe((res: any) => {
-        this.id = res.id;
-        this.uploadImagesIfAny().then(()=> { this.loading=false; this.router.navigate(['/dashboard/properties']); });
-      });
+    const m = this.model;
+    if (!m.titre.trim() || !m.type_id || !m.zone_id || !m.prix) {
+      this.error = 'Titre, type, région et prix sont obligatoires';
+      return;
     }
-  }
+    this.loading = true;
+    this.error = '';
 
-  async uploadImagesIfAny() {
-    if(!this.imageFiles.length || !this.id) return Promise.resolve();
-    const fd = new FormData();
-    this.imageFiles.forEach(f => fd.append('images[]', f));
-    return this.svc.uploadImage(this.id!, fd).toPromise();
-  }
+    const upload$ = this.newFiles.length ? this.api.uploadImages(this.newFiles) : null;
+    const go = (uploaded: string[]) => {
+      const tarifs: BienPayload['tarifs'] = [{ type_tarif: 'vente', montant: +m.prix }];
+      if (m.loyer) tarifs.push({ type_tarif: 'location_mensuelle', montant: +m.loyer });
+      const payload: BienPayload = {
+        titre: m.titre.trim(), description: m.description, type_id: +m.type_id, zone_id: +m.zone_id, adresse: m.adresse,
+        latitude: m.latitude ? +m.latitude : null, longitude: m.longitude ? +m.longitude : null,
+        prix: +m.prix, chambres: +m.chambres, salles_bain: +m.salles_bain, surface: m.surface ? +m.surface : undefined,
+        tarifs, images: [...this.existingImages(), ...uploaded],
+      };
+      const save$ = this.isEdit ? this.api.updateBien(+this.id()!, payload) : this.api.createBien(payload);
+      save$.subscribe({
+        next: () => {
+          this.toast.success(this.isEdit ? 'Bien mis à jour — il repasse en validation' : 'Bien créé — en attente de validation par un administrateur');
+          this.router.navigate(['/dashboard/properties']);
+        },
+        error: e => { this.loading = false; this.error = errorMessage(e); },
+      });
+    };
 
-  pickLocation(lat:number,lng:number){
-    this.lat = lat; this.lng = lng;
-    this.model.location = `${lat},${lng}`; // or reverse geocode
+    if (upload$) upload$.subscribe({ next: go, error: e => { this.loading = false; this.error = errorMessage(e, "Échec de l'envoi des images"); } });
+    else go([]);
   }
-
 }
